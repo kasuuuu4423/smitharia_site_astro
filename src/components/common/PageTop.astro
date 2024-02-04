@@ -1,0 +1,36 @@
+---
+---
+
+<div id="pagetop" class="pagetop flex justify-center">
+    <button class="text-white border-0 background-transparent">
+        page top
+        <span class="tri ml-1"></span>
+    </button>
+</div>
+
+<style>
+    .tri{
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 5px 5px 5px;
+        border-color: transparent transparent #fff transparent;
+        transition: all 0.2s ease;
+    }
+    .pagetop:hover .tri{
+        border-width: 0 5px 5px 5px;
+        border-color: transparent transparent #0000ff transparent;
+        transform: translateY(-10px);
+    }
+</style>
+
+<script>
+    const pagetop = document.getElementById('pagetop');
+    pagetop?.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    });
+</script>

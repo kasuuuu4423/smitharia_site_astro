@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import logoImage from '../../../assets/images/smitharia_logo.svg';
+import { getCats } from '../../../lib/WP.ts';
+import Category from './Category.astro';
+const cats = await getCats();
+---
+
+<div class="w-full">
+    <div class="sticky top-16 -mt-2">
+        <a href="/">
+            <Image class="mb-14" src={logoImage} alt="Logo"/>
+        </a>
+        <div class="ml-6 text-sm">
+            <Category title="works" subcats={cats.works}/>
+            <Category title='studies' subcats={cats.studies}/>
+            <Category title='member tags' subcats={cats.artists}/>
+            <a class="text-white" href="/aboutus">
+                about us
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .sidebar {
+        /* Sidebar styles go here */
+    }
+</style>
+
+<script>
+</script>

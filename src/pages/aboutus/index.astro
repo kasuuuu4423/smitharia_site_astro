@@ -1,0 +1,42 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Members from '../../components/aboutus/Members.astro';
+import { Image } from 'astro:assets';
+import aboutImage from '../../assets/images/about_top.png';
+import Scrollate from '../../components/common/Scrollate.astro';
+---
+
+<Layout title="about us" pagename="about us">
+	<main class="w-full pl-16">
+		<div class="mb-52">
+			<Image class="w-full h-auto" src={aboutImage} alt=""/>
+		</div>
+		<div class="info mb-52 text-white font-sans font-bold">
+			<h1 class="text-center mb-10 text-2xl">
+				スミサリアとは
+				<div class="en font-serif text-[0.6rem] -mt-4 text-[#ff0000]">about smitharia</div>
+			</h1>
+			<div class="text-center leading-[3rem] relative">
+				<p>
+					メンバーを固定せず、その時必要な人が集まりモノを作るプラットフォームです。<br/>
+					映像・音楽などのメディアを中心に様々なモノを作りだします。
+				</p>
+				<p class="en font-serif w-full text-[0.6rem] absolute top-[0.7rem] text-[#0000ff] left-1/2 -translate-x-2/4">
+					It is a platform where people who need something at that time gather and create it, without fixing the members.<br/>
+					We create a variety of products centered on media such as video and music.
+				</p>
+			</div>
+		</div>
+		<Scrollate text='member'/>
+		<div class="mb-52"></div>
+		<Members />
+	</main>
+</Layout>
+
+<style>
+	main {
+	}
+</style>
+
+<script>
+</script>

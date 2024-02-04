@@ -1,0 +1,23 @@
+---
+interface Props {
+    icon_cat: string;
+    icon: string;
+	text: string;
+    url: string;
+}
+
+const { icon_cat, icon, text, url } = Astro.props;
+---
+
+<div class="mb-1">
+    <a href={ url } target="_blank">
+        <i class={"mr-1 fa-"+ icon_cat + " fa-"+icon}></i>
+        { text }
+    </a>
+</div>
+
+<style>
+</style>
+
+<script>
+</script>

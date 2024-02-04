@@ -1,0 +1,24 @@
+---
+interface Props {
+	text: string;
+}
+
+const { text } = Astro.props;
+---
+
+<div class="scrollate flex my-8 justify-center flex-wrap">
+    <div class="line"></div>
+    <div class="text-center text-white text-serif w-full my-3">{ text }</div>
+    <div class="line"></div>
+</div>
+
+<style>
+    .line{
+        border-right: 1px solid #fff;
+        height: 100px;
+        width: 1px;
+    }
+</style>
+
+<script>
+</script>

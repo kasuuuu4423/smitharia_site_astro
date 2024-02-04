@@ -1,0 +1,29 @@
+---
+import { type Work } from '../../lib/WP';
+interface Props {
+	work: Work;
+}
+
+const { work } = Astro.props;
+---
+
+<div
+	class={
+		(work.acf.extend_column?"col-span-2 ":"")+
+		(work.acf.extend_row?"row-span-2":"")
+	}
+>
+	<a href={"/work/"+work.id}>
+		<img
+			class="w-full h-full object-cover"
+			src={work.acf.thumbnail.sizes.medium_large}
+			alt={work.acf.thumbnail.alt==""?work.title.rendered:work.acf.thumbnail.alt}
+		>
+	</a>
+</div>
+
+<style>
+</style>
+
+<script>
+</script>

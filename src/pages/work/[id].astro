@@ -1,0 +1,60 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getWorks, getWork, getCatsFromWork, getRawCats } from '../../lib/WP';
+
+export async function getStaticPaths() {
+    const works = await getWorks();
+    const ids = works.map((work) => {return{params: {id: work.id}}});
+    return ids;
+}
+const { id } = Astro.params;
+const work = await getWork(id);
+const cats = await getRawCats();
+const workCats = getCatsFromWork(work, cats);
+---
+
+<Layout title={work.title.rendered} pagename="works">
+    <div class="w-full text-white">
+        <img src={work.acf.thumbnail.url} alt={work.acf.thumbnail.alt==""?work.title.rendered:work.acf.thumbnail.alt}>
+        <div class="-mt-6 ml-16">
+            <h1 class="text-5xl font-black">{work.title.rendered}</h1>
+            <div class="flex">
+                {workCats.map((cat) => (
+                    <div class="text-[11px] font-bold">{cat.name}<span class="mx-[1px]">/</span></div>
+                ))}
+            </div>
+        </div>
+        <div class="info font-sans font-bold flex gap-10 my-28 tracking-0 text-xs">
+            <div class="credit whitespace-pre">{work.acf.credit}</div>
+            <div class="mt-10">
+                <div set:html={work.acf.description}/>
+            </div>
+        </div>
+        <section class="content">
+            <div set:html={work.content.rendered}/>
+        </section>
+    </div>
+</Layout>
+
+<style is:global>
+    figure{
+        margin-bottom: 5rem;
+    }
+    .wp-block-embed__wrapper{
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+    }
+    .wp-block-embed__wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<script>
+</script>
+

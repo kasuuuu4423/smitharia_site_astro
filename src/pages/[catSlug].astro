@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Works from '../components/works/Works.astro';
+import { getRawCats } from '../lib/WP.ts';
+
+export async function getStaticPaths() {
+    const cats = await getRawCats();
+    const catSlug = cats.map((cat) => {return{params: {catSlug: encodeURI(cat.slug)}}});
+    return catSlug;
+}
+const cats = await getRawCats();
+const { catSlug } = Astro.params;
+const catId = cats.find((cat) => cat.slug === catSlug);
+---
+
+<Layout title="" pagename="works">
+	<main class="w-full">
+		<Works filterCatId={catId?.id}/>
+	</main>
+</Layout>
+
+<style>
+	main {
+	}
+</style>
+
+<script>
+</script>

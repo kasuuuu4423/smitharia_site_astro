@@ -1,0 +1,28 @@
+---
+import type { CatType } from '../../../lib/WP'
+
+interface Props {
+    title: string,
+    subcats: CatType[]
+}
+const { title, subcats } = Astro.props;
+---
+
+<ul class="mb-1 text-white">
+    <li>{title}</li>
+    <ul class="category ml-4">
+        {subcats.map(cat=>
+            <li class="mb-1">
+                <a href={"/"+cat.slug}>
+                    {cat.name}
+                </a>
+            </li>
+        )}
+    </ul>
+</ul>
+
+<style>
+</style>
+
+<script>
+</script>

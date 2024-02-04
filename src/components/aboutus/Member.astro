@@ -1,0 +1,114 @@
+---
+interface Props {
+	name: string;
+	englishName: string;
+	position: string;
+	bio: string;
+	image: string;
+}
+
+const { name, englishName, image, position, bio } = Astro.props;
+---
+
+<div class="member mb-52">
+	<div class="grid grid-cols-[260px,1fr] gap-14">
+		<div class="member-image h-[330px]">
+			<img class="h-full w-full object-cover" src={image} alt={name}>
+		</div>
+		<div class="info relative text-white mt-10 pr-40 font-sans">
+			<div class="heading-position absolute text-5xl font-serif right-64 top-[-50px]">ENGINEER</div>
+			<h3 class="text-xl font-bold mb-3">
+				{name}
+				<div class="english-name font-serif -mt-3 text-[0.6rem] text-[#ff0000] font-thin">{englishName}</div>
+			</h3>
+			<div class="position font-medium text-sm mb-4">
+				{"仮アーティスト"+position}
+				<div class="english-position font-serif -mt-2 text-[0.6rem] text-[#00ff00] font-thin">{position}</div>
+			</div>
+			<div id="bio" class="bio relative font-medium text-sm mb-4 leading-[3rem] whitespace-pre-wrap">
+				{bio}
+				<div id="english-bio" class="english-bio absolute top-[0.9rem] font-serif text-[0.6rem] text-[#00ff00] font-thin">{bio}</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style is:global>
+	.heading-position{
+		letter-spacing: -1rem;
+	}
+	.heading-position span{
+		top: 0;
+		left: 0;
+	}
+	.heading-position span:nth-child(2n){
+		transition: 10s cubic-bezier(0, 1, 0, 1);
+	}
+	.heading-position span:nth-child(2n+1){
+		transition: 30s cubic-bezier(0, 1, 0, 1);
+	}
+</style>
+
+<script>
+	window.addEventListener("load", ()=>{
+		const tops = [] as number[][];
+		const lefts = [] as number[][];
+		const headingPosition = document.getElementsByClassName('heading-position');
+		for(let i = 0; i < headingPosition.length; i++){
+			if (headingPosition[i] != null && headingPosition[i].textContent != null) {
+				tops[i] = [];
+				lefts[i] = [];
+				const breakHeadingPosition = headingPosition[i].textContent?.split('');
+				const redPos = 0;
+				const greenPos = 3;
+				const bluePos = 5;
+				const classNames = "absolute";
+				const color = ["#ff0000", "#00ff00", "#0000ff"];
+				const tagHeadingPosition = breakHeadingPosition?.map((char, index) => {
+					tops[i][index] = Math.random() * 150 - 60;
+					lefts[i][index] = Math.random() * 150 - 60;
+					if (index === redPos) {
+						return "<span class='"+classNames+"' style='color:"+color[0]+"'>" + char + "</span>";
+					} else if (index === greenPos) {
+						return "<span class='"+classNames+"' style='color:"+color[1]+"'>" + char + "</span>";
+					} else if (index === bluePos) {
+						return "<span class='"+classNames+"' style='color:"+color[2]+"'>" + char + "</span>";
+					} else {
+						return "<span class='"+classNames+"'>" + char + "</span>";
+					}
+				});
+				headingPosition[i].innerHTML = tagHeadingPosition.join('');
+			}
+		}
+
+		const animation = ()=>{
+			for(let i = 0; i < headingPosition.length; i++){
+				const position = headingPosition[i];
+				const spans = position.getElementsByTagName('span');
+				for(let j = 0; j < spans.length; j++){
+					// if(Math.random() * 2 < 1) tops[i][j]++;
+					// else tops[i][j]--;
+					// if(Math.random() * 2 < 1) lefts[i][j]++;
+					// else lefts[i][j]--;
+					spans[j].style.top = tops[i][j] + "px";
+					spans[j].style.left = lefts[i][j] + "px";
+				}
+			}
+		}
+		setTimeout(()=>{
+			animation();
+		}, 750);
+		
+		let loopFactry = function(func: ()=>void){
+			let handler = {} as {id: number};
+			let loop = function(){
+				func();
+				handler.id = requestAnimationFrame(loop);
+			}
+			handler.id = requestAnimationFrame(loop);
+			return handler;
+		}
+
+		//let interval = loopFactry(animation);
+	});
+</script>

@@ -1,0 +1,37 @@
+---
+import { getWorks } from '../../lib/WP.ts';
+import {type CatType } from '../../lib/WP.ts';
+import Slider from '../top/Slider.tsx';
+import Scrollate from '../common/Scrollate.astro';
+import Work from './Work.astro';
+
+interface Props {
+    filterCatId?: number; 
+}
+const { filterCatId } = Astro.props;
+
+let works = await getWorks();
+const recommendWorks = works.filter(work => work.acf.is_recommend);
+
+if(filterCatId) {
+    works = works.filter(work => work.categories.filter(cat => cat == filterCatId).length > 0);
+}
+---
+
+<section class="works">
+    <Slider client:load works={recommendWorks}/>
+    <Scrollate text='other projects'/>
+    <div class="others grid grid-flow-dense grid-cols-3 grid-rows-[200px] gap-5">
+        {
+            works.map(work => <Work work={work}/>)
+        }
+    </div>
+</section>
+
+<style>
+    .works {
+    }
+</style>
+
+<script>
+</script>
