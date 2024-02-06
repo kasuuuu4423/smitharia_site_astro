@@ -74,7 +74,7 @@ const { memberInfo } = Astro.props;
 						return "<span class='"+classNames+"'>" + char + "</span>";
 					}
 				});
-				headingPosition[i].innerHTML = tagHeadingPosition.join('');
+				headingPosition[i].innerHTML = tagHeadingPosition?tagHeadingPosition.join(''):"";
 			}
 		}
 

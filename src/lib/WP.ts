@@ -1,5 +1,14 @@
 import { WPWorkUrl, WPCatUrl, WPMemberUrl } from "./const/wp_consts"; 
 
+export interface WPParamType {
+    id?: number,
+    categories?: string,
+    per_page?: string,
+    page?: string,
+    orderby?: string,
+    filter?: string,
+};
+
 export interface Work {
     acf: {
         credit: string,
@@ -157,12 +166,12 @@ export async function getMembers(): Promise<MemberType[]>{
 }
 
 function deleteEmptyParam(params: WPParamType): {[key: string]: string}{
-    const p: {[key: string]: string} = params;
+    const p: WPParamType = params;
     if(params.categories === "") delete p.categories;
     if(params.per_page === "") delete p.per_page;
     if(params.orderby === "") delete p.orderby;
     if(params.page === "") delete p.page;
-    return p;
+    return p as {[key: string]: string};
 }
 
 function objectToQueryString(obj: {[key: string]: string}): string{
