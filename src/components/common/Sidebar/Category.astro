@@ -8,11 +8,11 @@ interface Props {
 const { title, subcats } = Astro.props;
 ---
 
-<ul class="mb-1 text-white">
-    <li>{title}</li>
+<ul class="mb-2 md:mb-1 text-white">
+    <li class="mb-2 md:mb-1">{title}</li>
     <ul class="category ml-4">
         {subcats.map(cat=>
-            <li class="mb-1">
+            <li class="mb-2 md:mb-1">
                 <a href={"/"+cat.slug}>
                     {cat.name}
                 </a>

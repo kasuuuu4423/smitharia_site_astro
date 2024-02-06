@@ -2,17 +2,26 @@
 import { getMembers } from '../../lib/WP';
 import Member from './Member.astro';
 
-const members = await getMembers();
+const shuffleArray = (array: any[]) => {
+    const cloneArray = [...array]
+
+    for (let i = cloneArray.length - 1; i >= 0; i--) {
+      let rand = Math.floor(Math.random() * (i + 1))
+      // 配列の要素の順番を入れ替える
+      let tmpStorage = cloneArray[i]
+      cloneArray[i] = cloneArray[rand]
+      cloneArray[rand] = tmpStorage
+    }
+
+    return cloneArray
+  }
+
+const members = shuffleArray(await getMembers());
 ---
 
 <section class="members">
     {members.map(member =>
-        <Member
-            bio={member.acf.bio}
-            position={member.acf.position}
-            name={member.acf.name}
-            englishName={member.acf.english_name}
-            image={member.acf.pic} />
+        <Member memberInfo={member} />
     )}
 </section>
 

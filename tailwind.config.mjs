@@ -9,6 +9,11 @@ export default {
 				serif: ["big-caslon-fb", ...defaultTheme.fontFamily.serif],
 				sans: ["游ゴシック体", "YuGothic", "游ゴシック", "Yu Gothic", ...defaultTheme.fontFamily.sans],
 			},
+			colors: {
+				red: "#FF2E2E",
+				green: "#36E83C",
+				blue: "#2F4FFF",
+			}
 		},
 	},
 	plugins: [],

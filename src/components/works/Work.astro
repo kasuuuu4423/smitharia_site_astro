@@ -8,7 +8,7 @@ const { work } = Astro.props;
 ---
 
 <div
-	class={
+	class={"mb-28 md:mb-0 h-[300px] md:h-auto"+
 		(work.acf.extend_column?"col-span-2 ":"")+
 		(work.acf.extend_row?"row-span-2":"")
 	}
@@ -19,6 +19,7 @@ const { work } = Astro.props;
 			src={work.acf.thumbnail.sizes.medium_large}
 			alt={work.acf.thumbnail.alt==""?work.title.rendered:work.acf.thumbnail.alt}
 		>
+		<h2 class="w-1/2 text-white -translate-y-1/2 drop-shadow font-serif ml-10">{work.title.rendered}</h2>
 	</a>
 </div>
 

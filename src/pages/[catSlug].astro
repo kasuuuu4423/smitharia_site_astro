@@ -10,12 +10,12 @@ export async function getStaticPaths() {
 }
 const cats = await getRawCats();
 const { catSlug } = Astro.params;
-const catId = cats.find((cat) => cat.slug === catSlug);
+const cat = cats.find((cat) => cat.slug === catSlug);
 ---
 
-<Layout title="" pagename="works">
+<Layout title="" pagename={cat?cat.name:"works"}>
 	<main class="w-full">
-		<Works filterCatId={catId?.id}/>
+		<Works filterCatId={cat?.id}/>
 	</main>
 </Layout>
 

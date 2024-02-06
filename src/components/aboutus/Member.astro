@@ -1,33 +1,31 @@
 ---
+import type { MemberType } from '../../lib/WP';
+
 interface Props {
-	name: string;
-	englishName: string;
-	position: string;
-	bio: string;
-	image: string;
+	memberInfo: MemberType;
 }
 
-const { name, englishName, image, position, bio } = Astro.props;
+const { memberInfo } = Astro.props;
 ---
 
-<div class="member mb-52">
-	<div class="grid grid-cols-[260px,1fr] gap-14">
+<div class="member mb-52 px-6 md:p-0">
+	<div class="md:grid grid-cols-[260px,1fr] gap-14">
 		<div class="member-image h-[330px]">
-			<img class="h-full w-full object-cover" src={image} alt={name}>
+			<img class="h-full w-full object-cover" src={memberInfo.acf.pic} alt={memberInfo.acf.name}>
 		</div>
-		<div class="info relative text-white mt-10 pr-40 font-sans">
-			<div class="heading-position absolute text-5xl font-serif right-64 top-[-50px]">ENGINEER</div>
+		<div class="info relative text-white mt-10 md:pr-40 font-sans">
+			<div class="heading-position absolute text-5xl font-serif right-32 md:right-64 top-[-50px]">{memberInfo.acf.heading_position}</div>
 			<h3 class="text-xl font-bold mb-3">
-				{name}
-				<div class="english-name font-serif -mt-3 text-[0.6rem] text-[#ff0000] font-thin">{englishName}</div>
+				{memberInfo.acf.name}
+				<div class="english-name font-serif -mt-3 text-[0.6rem] text-red font-thin">{memberInfo.acf.english_name}</div>
 			</h3>
 			<div class="position font-medium text-sm mb-4">
-				{"仮アーティスト"+position}
-				<div class="english-position font-serif -mt-2 text-[0.6rem] text-[#00ff00] font-thin">{position}</div>
+				{memberInfo.acf.position}
+				<div class="english-position font-serif -mt-2 text-[0.6rem] text-green font-thin">{memberInfo.acf.english_position}</div>
 			</div>
 			<div id="bio" class="bio relative font-medium text-sm mb-4 leading-[3rem] whitespace-pre-wrap">
-				{bio}
-				<div id="english-bio" class="english-bio absolute top-[0.9rem] font-serif text-[0.6rem] text-[#00ff00] font-thin">{bio}</div>
+				{memberInfo.acf.bio}
+				<div id="english-bio" class="english-bio absolute top-[0.6rem] font-serif text-[0.6rem] text-blue font-thin">{memberInfo.acf.english_bio}</div>
 			</div>
 		</div>
 	</div>
@@ -63,16 +61,15 @@ const { name, englishName, image, position, bio } = Astro.props;
 				const greenPos = 3;
 				const bluePos = 5;
 				const classNames = "absolute";
-				const color = ["#ff0000", "#00ff00", "#0000ff"];
 				const tagHeadingPosition = breakHeadingPosition?.map((char, index) => {
-					tops[i][index] = Math.random() * 150 - 60;
-					lefts[i][index] = Math.random() * 150 - 60;
+					tops[i][index] = Math.random() * 120 - 60;
+					lefts[i][index] = Math.random() * 120 - 60;
 					if (index === redPos) {
-						return "<span class='"+classNames+"' style='color:"+color[0]+"'>" + char + "</span>";
+						return "<span class='"+classNames+" text-red'>" + char + "</span>";
 					} else if (index === greenPos) {
-						return "<span class='"+classNames+"' style='color:"+color[1]+"'>" + char + "</span>";
+						return "<span class='"+classNames+" text-green'>" + char + "</span>";
 					} else if (index === bluePos) {
-						return "<span class='"+classNames+"' style='color:"+color[2]+"'>" + char + "</span>";
+						return "<span class='"+classNames+" text-blue'>" + char + "</span>";
 					} else {
 						return "<span class='"+classNames+"'>" + char + "</span>";
 					}

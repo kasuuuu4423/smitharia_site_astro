@@ -33,11 +33,6 @@
     "prettier-plugin-astro": "^0.13.0",
     "swiper": "^11.0.5"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "src/**/*.{ts,tsx}": "npm run lint:precommit",
     "src/**/*.{astro,js,jsx,ts,tsx,json,css,scss}": "npm run fmt:precommit"
