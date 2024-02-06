@@ -21,7 +21,7 @@ if(filterCatId) {
 <section class="works">
     <Slider client:load works={recommendWorks}/>
     <Scrollate text='other projects'/>
-    <div class="others block md:grid grid-flow-dense grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:grid-rows-[200px] md:gap-5">
+    <div class="others block md:grid grid-flow-dense md:grid-cols-2 lg:grid-cols-3 md:grid-rows-[200px] md:gap-5">
         {
             works.map(work => <Work work={work}/>)
         }

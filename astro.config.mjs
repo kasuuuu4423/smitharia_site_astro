@@ -8,12 +8,12 @@ import node from "@astrojs/node";
 
 // https://astro.build/config
 export default defineConfig({
-  output: "hybrid",
+  //output: "hybrid",
   integrations: [react(), tailwind()],
   image: {
     domains: ["smitharia.shimizuyasushi.com"]
   },
-  adapter: node({
-    mode: "standalone"
-  })
+  // adapter: node({
+  //   mode: "standalone"
+  // })
 });
