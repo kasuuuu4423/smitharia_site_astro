@@ -27,9 +27,9 @@ export const parentClass = `
 </style>
 
 <script>
-    const text = document.getElementsByClassName('text')[0];
-    const english = document.getElementsByClassName('english')[0];
-    const textBG = document.getElementsByClassName('text-bg')[0];
+    const text = document.getElementsByClassName('text')[0] as HTMLElement;
+    const english = document.getElementsByClassName('english')[0] as HTMLElement;
+    const textBG = document.getElementsByClassName('text-bg')[0] as HTMLElement;
     let hidden = false;
     addEventListener('load', () => {
         const textWidth = english.clientWidth;
