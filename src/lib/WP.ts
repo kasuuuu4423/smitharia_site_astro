@@ -181,3 +181,9 @@ function objectToQueryString(obj: {[key: string]: string}): string{
     });
     return queryString;
 }
+
+export function convertImagePathToFiltered(imagePath: string): string{
+    const filename = imagePath.split("/").pop();
+    const directory = imagePath.split("/").slice(0, -1).join("/");
+    return directory + "/filtered_" + filename;
+}

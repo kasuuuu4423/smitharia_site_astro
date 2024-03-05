@@ -1,29 +1,63 @@
 ---
 import { type Work } from '../../lib/WP';
+import { convertImagePathToFiltered } from '../../lib/WP';
 interface Props {
 	work: Work;
 }
 
+
 const { work } = Astro.props;
+const imgPath = convertImagePathToFiltered(work.acf.thumbnail.url);
+const workClass = `
+	[&_img.normal]:hover:opacity-0
+	[&_h2]:hover:opacity-100
+	[&_h2]:hover:top-1/2
+	mb-28
+	md:mb-0 h-[300px]
+	md:h-full
+	relative `
+	+ (work.acf.extend_column?"col-span-2 ":"")
+	+ (work.acf.extend_row?"row-span-2":"");
 ---
 
 <div
-	class={"mb-28 md:mb-0 h-[300px] md:h-full "+
-		(work.acf.extend_column?"col-span-2 ":"")+
-		(work.acf.extend_row?"row-span-2":"")
-	}
+	class={workClass}
 >
-	<a href={"/work/"+work.id}>
-		<img
-			class="w-full h-full object-cover"
-			src={work.acf.thumbnail.sizes.medium_large}
-			alt={work.acf.thumbnail.alt==""?work.title.rendered:work.acf.thumbnail.alt}
-		>
-		<h2 class="md:hidden w-1/2 text-white -translate-y-1/2 drop-shadow font-serif ml-10">{work.title.rendered}</h2>
+	<a class="" href={"/work/"+work.id}>
+		<div class="work_thumbnail relative w-full h-full">
+			<img
+				class="w-full h-full object-cover"
+				src={imgPath}
+				alt={"filtered"+work.acf.thumbnail.alt==""?work.title.rendered:work.acf.thumbnail.alt}
+			>
+			<img
+				class="normal absolute duration-200 top-0 left-0 w-full h-full object-cover"
+				src={work.acf.thumbnail.sizes.medium_large}
+				alt={work.acf.thumbnail.alt==""?work.title.rendered:work.acf.thumbnail.alt}
+			>
+		</div>
+		<h2 class="
+			md:-translate-x-1/2
+			md:m-0
+			md:absolute
+			md:top-[calc(50%+1rem)]
+			md:left-1/2
+			md:opacity-0
+			md:duration-200
+			md:text-center
+			w-1/2
+			text-white
+			-translate-y-1/2
+			drop-shadow
+			font-serif
+			ml-10">{work.title.rendered}</h2>
 	</a>
 </div>
 
 <style>
+	.work_thumbnail > img{
+		transition: 1s cubic-bezier(0, 0.3, 0, 0.9);
+	}
 </style>
 
 <script>
