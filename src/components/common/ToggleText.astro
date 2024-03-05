@@ -1,0 +1,49 @@
+---
+interface Props {
+    text: string;
+    english: string;
+}
+
+const { text, english }: Props = Astro.props;
+export const parentClass = `
+	[&_div.english]:hover:opacity-0
+	[&_div.text]:opacity-0
+	[&_div.text]:hover:opacity-100
+	relative `;
+---
+
+
+<div class="toggle_text relative flex justify-center w-full h-full text-base font-sans font-bold text-white">
+    <div class="text-bg duration-200 w-10 h-3 bg-black absolute bottom-0 z-0"></div>
+    <div class="text w-fit relative z-1">{text}</div>
+    <div class="english w-fit absolute duration-200 top-0 left-0">{english}</div>
+</div>
+
+
+<style>
+	.toggle_text > .text{
+		transition: 0.5s cubic-bezier(0, 0.3, 0, 0.9);
+	}
+</style>
+
+<script>
+    const text = document.querySelector('.text');
+    const english = document.querySelector('.english');
+    const textBG = document.querySelector('.text-bg');
+    let hidden = false;
+    addEventListener('load', () => {
+        const textWidth = english.clientWidth;
+        textBG.style.width = `${textWidth}px`;
+    });
+    text.addEventListener('transitionrun', () => {
+        if (hidden) {
+            const textWidth = english.clientWidth;
+            textBG.style.width = `${textWidth}px`;
+            hidden = false;
+        } else {
+            const textWidth = text.clientWidth;
+            textBG.style.width = `${textWidth}px`;
+            hidden = true;
+        }
+    });
+</script>

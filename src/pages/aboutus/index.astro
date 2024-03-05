@@ -3,7 +3,9 @@ import Layout from '../../layouts/Layout.astro';
 import Members from '../../components/aboutus/Members.astro';
 import Scrollate from '../../components/common/Scrollate.astro';
 import ToggleFilteredImage from '../../components/common/ToggleFilteredImage.astro';
-import { parentClass } from '../../components/common/ToggleFilteredImage.astro';
+import ToggleText from '../../components/common/ToggleText.astro';
+import { parentClass as imgParentClass } from '../../components/common/ToggleFilteredImage.astro';
+import { parentClass as textParentClass } from '../../components/common/ToggleText.astro';
 import { getPreference } from '../../lib/WP';
 
 const pref = await getPreference();
@@ -13,8 +15,11 @@ const alt = pref.acf.about_image.alt;
 
 <Layout title="about us" pagename="about us">
 	<main class="w-full md:pl-16">
-		<div class={"mb-52" + parentClass}>
+		<div class={"mb-52" + imgParentClass + " " + textParentClass}>
 			<ToggleFilteredImage imgPath={aboutImage} alt={alt} reverse/>
+			<div class="absolute bottom-0 right-0 m-10 w-80">
+				<ToggleText text="スミサリアの原風景" english="Primitive landscape of smitharia."/>
+			</div>
 		</div>
 		<div class="info mb-52 text-white font-sans font-bold px-6 md:p-0">
 			<h1 class="text-center mb-10 text-2xl">
