@@ -27,9 +27,9 @@ export const parentClass = `
 </style>
 
 <script>
-    const text = document.querySelector('.text');
-    const english = document.querySelector('.english');
-    const textBG = document.querySelector('.text-bg');
+    const text = document.querySelector<HTMLElement>('.text');
+    const english = document.querySelector<HTMLElement>('.english');
+    const textBG = document.querySelector<HTMLElement>('.text-bg');
     let hidden = false;
     addEventListener('load', () => {
         const textWidth = english.clientWidth;
