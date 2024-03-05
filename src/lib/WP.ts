@@ -1,4 +1,4 @@
-import { WPWorkUrl, WPCatUrl, WPMemberUrl } from "./const/wp_consts"; 
+import { WPWorkUrl, WPCatUrl, WPMemberUrl, WPPreferenceUrl } from "./const/wp_consts"; 
 
 export interface WPParamType {
     id?: number,
@@ -9,22 +9,24 @@ export interface WPParamType {
     filter?: string,
 };
 
+interface WPImage {
+    id: number,
+    url: string,
+    alt: string,
+    sizes: {
+        thumbnail: string,
+        medium: string,
+        medium_large: string,
+        large: string,
+    },
+}
+
 export interface Work {
     acf: {
         credit: string,
         description: string,
         period: string,
-        thumbnail: {
-            id: number,
-            url: string,
-            alt: string,
-            sizes: {
-                thumbnail: string,
-                medium: string,
-                medium_large: string,
-                large: string,
-            },
-        },
+        thumbnail: WPImage,
         extend_column: boolean,
         extend_row: boolean,
         is_recommend: boolean,
@@ -66,6 +68,13 @@ export interface MemberType {
     },
     id: number,
 };
+
+export interface Preference {
+    acf: {
+        about_image: WPImage,
+        about_description: string,
+    }
+}
 
 export async function getCats(): Promise<ReconstructCatsType> {
     const response = await fetch(
@@ -163,6 +172,13 @@ export async function getMembers(): Promise<MemberType[]>{
     const membersRaw = await fetch(u);
     const members = await membersRaw.json();
     return members;
+}
+
+export async function getPreference(): Promise<Preference>{
+    const u = new URL(WPPreferenceUrl);
+    const prefRes = await fetch(u);
+    const preference: Preference[] = await prefRes.json();
+    return preference[0];
 }
 
 function deleteEmptyParam(params: WPParamType): {[key: string]: string}{
