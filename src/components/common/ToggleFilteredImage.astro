@@ -1,0 +1,37 @@
+---
+import { convertImagePathToFiltered } from '../../lib/WP';
+interface Props {
+    imgPath: string;
+    alt: string;
+}
+
+const { imgPath, alt }: Props = Astro.props;
+const filteredImgPath = convertImagePathToFiltered(imgPath);
+export const parentClass = `
+	[&_img.normal]:hover:opacity-0
+	relative `;
+---
+
+
+<div class="toggle_image relative w-full h-full">
+    <img
+        class="w-full h-full object-cover"
+        src={filteredImgPath}
+        alt={alt}
+    >
+    <img
+        class="normal absolute duration-200 top-0 left-0 w-full h-full object-cover"
+        src={imgPath}
+        alt={alt}
+    >
+</div>
+
+
+<style>
+	.toggle_image > img{
+		transition: 1s cubic-bezier(0, 0.3, 0, 0.9);
+	}
+</style>
+
+<script>
+</script>
