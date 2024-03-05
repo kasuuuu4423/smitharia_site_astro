@@ -3,9 +3,10 @@ import { convertImagePathToFiltered } from '../../lib/WP';
 interface Props {
     imgPath: string;
     alt: string;
+    reverse?: boolean;
 }
 
-const { imgPath, alt }: Props = Astro.props;
+const { imgPath, alt, reverse }: Props = Astro.props;
 const filteredImgPath = convertImagePathToFiltered(imgPath);
 export const parentClass = `
 	[&_img.normal]:hover:opacity-0
@@ -16,12 +17,12 @@ export const parentClass = `
 <div class="toggle_image relative w-full h-full">
     <img
         class="w-full h-full object-cover"
-        src={filteredImgPath}
+        src={reverse?imgPath:filteredImgPath}
         alt={alt}
     >
     <img
         class="normal absolute duration-200 top-0 left-0 w-full h-full object-cover"
-        src={imgPath}
+        src={reverse?filteredImgPath:imgPath}
         alt={alt}
     >
 </div>
