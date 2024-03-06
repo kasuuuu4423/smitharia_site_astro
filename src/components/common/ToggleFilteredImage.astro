@@ -18,7 +18,7 @@ export const parentClass = `
 
 <div class="toggle_image relative w-full h-full">
     <img
-        class="opacity-0 w-full h-full object-cover"
+        class="opacity-0 filtered w-full h-full object-cover"
         src={reverse?imgPath:filteredImgPath}
         alt={alt}
     >
@@ -52,9 +52,9 @@ export const parentClass = `
             }).then(() => {
                 const load = loads[i] as HTMLImageElement;
                 load.style.opacity = '0';
-                normal.classList.remove('opacity-0');
                 const filtered = filtereds[i] as HTMLImageElement;
-                filtered.classList.add('opacity-0');
+                filtered.classList.remove('opacity-0');
+                normal.classList.remove('opacity-0');
             });
         }
     });
