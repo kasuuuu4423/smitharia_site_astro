@@ -1,5 +1,7 @@
 ---
 import { convertImagePathToFiltered } from '../../lib/WP';
+import { Image } from 'astro:assets';
+import Load from '../../assets/images/load.gif';
 interface Props {
     imgPath: string;
     alt: string;
@@ -25,6 +27,7 @@ export const parentClass = `
         src={reverse?filteredImgPath:imgPath}
         alt={alt}
     >
+    <Image class="load absolute duration-200 top-0 left-0 w-full h-full object-cover" src={Load} alt=""/>
 </div>
 
 
@@ -35,4 +38,21 @@ export const parentClass = `
 </style>
 
 <script>
+    window.addEventListener("load", () => {
+        console.log('loaded');
+        const loads = document.querySelectorAll('.toggle_image .load');
+        const normals = document.querySelectorAll('.toggle_image .normal');
+        const filtereds = document.querySelectorAll('.toggle_image .filtered');
+        for (let i = 0; i < normals.length; i++) {
+            const normal = normals[i] as HTMLImageElement;
+            new Promise((resolve) => {
+                while(!normal.complete){
+                };
+                resolve(normal.complete);
+            }).then(() => {
+                const load = loads[i] as HTMLImageElement;
+                load.style.opacity = '0';
+            });
+        }
+    });
 </script>
