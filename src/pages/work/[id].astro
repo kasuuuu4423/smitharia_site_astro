@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import { getWorks, getWork, getCatsFromWork, getRawCats } from '../../lib/WP';
 
 export async function getStaticPaths() {
-    const works = await getWorks();
+    const works = await getWorks({'per_page': "100"});
     const ids = works.map((work) => {return{params: {id: work.id}}});
     return ids;
 }
