@@ -10,7 +10,7 @@ interface Props {
 }
 const { filterCatId } = Astro.props;
 
-let works = await getWorks();
+let works = await getWorks({'per_page': "100"});
 const recommendWorks = works.filter(work => work.acf.is_recommend);
 
 if(filterCatId) {
