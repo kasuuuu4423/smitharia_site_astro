@@ -14,7 +14,7 @@ const { memberInfo } = Astro.props;
 			<img class="h-full w-full object-cover" src={memberInfo.acf.pic} alt={memberInfo.acf.name}>
 		</div>
 		<div class="info relative text-white mt-10 md:pr-40 font-sans">
-			<div class="heading-position absolute text-5xl font-serif right-32 md:right-64 top-[-50px]">{memberInfo.acf.heading_position}</div>
+			<div data-animated="false" class="heading-position absolute text-5xl font-serif right-32 md:right-64 top-[-50px]">{memberInfo.acf.heading_position}</div>
 			<h3 class="text-xl font-bold mb-3">
 				{memberInfo.acf.name}
 				<div class="english-name font-serif -mt-3 text-[0.6rem] text-red font-thin">{memberInfo.acf.english_name}</div>
@@ -52,6 +52,46 @@ const { memberInfo } = Astro.props;
 		const tops = [] as number[][];
 		const lefts = [] as number[][];
 		const headingPosition = document.getElementsByClassName('heading-position');
+
+		const animation = (i: number)=> {
+			if(i < headingPosition.length){
+				const position = headingPosition[i];
+				const spans = position.getElementsByTagName('span');
+				for(let j = 0; j < spans.length; j++){
+					// if(Math.random() * 2 < 1) tops[i][j]++;
+					// else tops[i][j]--;
+					// if(Math.random() * 2 < 1) lefts[i][j]++;
+					// else lefts[i][j]--;
+					spans[j].style.top = tops[i][j] + "px";
+					spans[j].style.left = lefts[i][j] + "px";
+				}
+			}
+		}
+
+		const animationAll = ()=>{
+			for(let i = 0; i < headingPosition.length; i++){
+				animation(i);
+			}
+		}
+
+		const withinScreenAnimation = ()=>{
+			const currentScroll = window.scrollY;
+			const currentScrollBottom = currentScroll + window.innerHeight;
+			for(let i = 0; i < headingPosition.length; i++){
+				const position = headingPosition[i];
+				const positionTop = position.getBoundingClientRect().top + currentScroll;
+				const positionBottom = position.getBoundingClientRect().bottom + currentScroll;
+				if(currentScroll < positionBottom && currentScrollBottom > positionTop){
+					if(position.getAttribute("data-animated") === "false"){
+						position.setAttribute("data-animated", "true");
+						setTimeout(()=>{
+							animation(i);
+						}, 300);
+					}
+				}
+			}
+		}
+
 		for(let i = 0; i < headingPosition.length; i++){
 			if (headingPosition[i] != null && headingPosition[i].textContent != null) {
 				tops[i] = [];
@@ -76,36 +116,15 @@ const { memberInfo } = Astro.props;
 				});
 				headingPosition[i].innerHTML = tagHeadingPosition?tagHeadingPosition.join(''):"";
 			}
+			withinScreenAnimation();
 		}
-
-		const animation = ()=>{
-			for(let i = 0; i < headingPosition.length; i++){
-				const position = headingPosition[i];
-				const spans = position.getElementsByTagName('span');
-				for(let j = 0; j < spans.length; j++){
-					// if(Math.random() * 2 < 1) tops[i][j]++;
-					// else tops[i][j]--;
-					// if(Math.random() * 2 < 1) lefts[i][j]++;
-					// else lefts[i][j]--;
-					spans[j].style.top = tops[i][j] + "px";
-					spans[j].style.left = lefts[i][j] + "px";
-				}
-			}
-		}
-		setTimeout(()=>{
-			animation();
-		}, 750);
 		
-		let loopFactry = function(func: ()=>void){
-			let handler = {} as {id: number};
-			let loop = function(){
-				func();
-				handler.id = requestAnimationFrame(loop);
-			}
-			handler.id = requestAnimationFrame(loop);
-			return handler;
-		}
+		window.addEventListener("scroll", withinScreenAnimation);
 
+		// setTimeout(()=>{
+		// 	animation();
+		// }, 750);
+		
 		//let interval = loopFactry(animation);
 	});
 </script>
