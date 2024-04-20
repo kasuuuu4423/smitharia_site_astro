@@ -16,6 +16,16 @@ const { title, pagename } = Astro.props;
 <!doctype html>
 <html lang="ja">
 	<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+        <script type="text/partytown" src="https://www.googletagmanager.com/gtag/js?id=G-2LJ2G1LB0T"></script>
+        <script type="text/partytown">
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'G-2LJ2G1LB0T');
+        </script>
+		
 		<meta charset="UTF-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		
