@@ -8,13 +8,13 @@ interface Props {
 const { memberInfo } = Astro.props;
 ---
 
-<div class="member mb-52 px-6 md:p-0">
-	<div class="md:grid grid-cols-[260px,1fr] gap-14">
+<div class="member mb-52 px-6 lg:p-0">
+	<div class="lg:grid md:grid-cols-[260px,1fr] grid-cols-[100px,1fr] gap-14">
 		<div class="member-image h-[330px]">
 			<img class="h-full w-full object-cover" src={memberInfo.acf.pic} alt={memberInfo.acf.name}>
 		</div>
-		<div class="info relative text-white mt-10 md:pr-40 font-sans">
-			<div data-animated="false" class="heading-position absolute text-5xl font-serif right-32 md:right-64 top-[-50px]">{memberInfo.acf.heading_position}</div>
+		<div class="info relative text-white mt-10 lg:pr-40 font-sans">
+			<div data-animated="false" class="heading-position absolute text-5xl font-serif right-32 lg:right-64 top-[-50px]">{memberInfo.acf.heading_position}</div>
 			<h3 class="text-xl font-bold mb-3">
 				{memberInfo.acf.name}
 				<div class="english-name font-serif -mt-3 text-[0.6rem] text-red font-thin">{memberInfo.acf.english_name}</div>
