@@ -15,7 +15,7 @@ const cat = cats.find((cat) => cat.slug === catSlug);
 
 <Layout title="" pagename={cat?cat.name:"works"}>
 	<main class="w-full">
-		<Works filterCatId={cat?.id}/>
+		<Works disableSlider filterCatId={cat?.id}/>
 	</main>
 </Layout>
 
