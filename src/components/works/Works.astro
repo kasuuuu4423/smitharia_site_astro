@@ -17,6 +17,8 @@ const recommendWorks = works.filter(work => work.acf.is_recommend);
 if(filterCatId) {
     works = works.filter(work => work.categories.filter(cat => cat == filterCatId).length > 0);
 }
+
+works = works.sort((a, b) => parseInt(b.acf.period.split(" - ")[0]) - parseInt(a.acf.period.split(" - ")[0]));
 ---
 
 <section class="works">
