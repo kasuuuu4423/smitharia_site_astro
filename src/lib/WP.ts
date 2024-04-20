@@ -1,4 +1,4 @@
-import { WPWorkUrl, WPCatUrl, WPMemberUrl, WPPreferenceUrl } from "./const/wp_consts"; 
+import { baseUrl, WPWorkUrl, WPCatUrl, WPMemberUrl, WPPreferenceUrl } from "./const/wp_consts"; 
 
 export interface WPParamType {
     id?: number,
@@ -201,5 +201,5 @@ function objectToQueryString(obj: {[key: string]: string}): string{
 export function convertImagePathToFiltered(imagePath: string): string{
     const filename = imagePath.split("/").pop();
     const directory = imagePath.split("/").slice(0, -1).join("/");
-    return directory + "/filtered_" + filename;
+    return baseUrl + "/wp-content/uploads/filtered/filtered_" + filename;
 }
