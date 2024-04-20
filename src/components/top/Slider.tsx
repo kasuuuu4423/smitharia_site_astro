@@ -37,7 +37,6 @@ const Slider = (props: {works: Work[]}) =>{
                                 text-white
                                 text-center
                                 drop-shadow
-                                font-sans
                                 font-bold
                                 opacity-0
                                 translate-y-1/2
