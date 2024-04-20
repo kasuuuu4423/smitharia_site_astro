@@ -15,12 +15,33 @@ const { title, pagename } = Astro.props;
 
 <!doctype html>
 <html lang="ja">
-	<head>
+	<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
 		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
+		
+
+		<!-- 一般的なタグ -->
+		<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+		<meta name="description" content="Creative Platform">
+		<meta name="keywords" content="{{ video, installation, software, web, graphic }}">
+		<!-- 設定 -->
+		<meta name="format-detection" content="telephone=no,email=no,address=no">
+		<!-- SNS向け -->
+		<meta property="og:type" content="website">
+		<meta property="og:title" content="smitharia">
+		<meta property="og:description" content="Creative Platform">
+		<meta property="og:url" content="https://smitharia.com">
+		<meta property="og:image" content="/favicon.svg">
+		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:site" content="@__smitharia">
+		<meta name="twitter:creator" content="@__smitharia">
+		<!-- アイコン関係 -->
+		<link rel="icon" type="shortcut icon" href="/favicon.svg">
+		<link rel="apple-touch-icon" sizes="256" href="/favicon.svg">
+		<!-- Android -->
+		<meta name="theme-color" content="#000000">
+
+
 		<title>{title==""?"smitharia":title+" | smitharia"}</title>
 		<link rel="stylesheet" href="https://use.typekit.net/kwl5mrn.css">
 		<script src="https://kit.fontawesome.com/24612b40c8.js" crossorigin="anonymous"></script>
