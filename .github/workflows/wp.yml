@@ -1,8 +1,8 @@
-name: After saving wordpress
+name: after saving wordpress
 
 on:
   repository_dispatch:
-    types: [after_saving_wordpress]
+    type: after_saving_wordpress
 
 jobs:
     FrontDeploy:
