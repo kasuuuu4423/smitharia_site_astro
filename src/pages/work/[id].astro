@@ -16,17 +16,17 @@ const workCats = getCatsFromWork(work, cats);
 <Layout title={work.title.rendered} pagename="works">
     <div class="w-full text-white">
         <img class="w-full h-auto" src={work.acf.thumbnail.url} alt={work.acf.thumbnail.alt==""?work.title.rendered:work.acf.thumbnail.alt}>
-        <div class="mt-6 md:-mt-6 ml-6 md:ml-16">
-            <h1 class="text-xl mb-5 md:mb-0 md:text-5xl font-black">{work.title.rendered}</h1>
+        <div class="mt-6 lg:-mt-6 ml-6 lg:ml-16">
+            <h1 class="text-xl mb-5 lg:mb-0 lg:text-5xl font-black">{work.title.rendered}</h1>
             <div class="flex flex-wrap">
                 {workCats.map((cat) => (
                     <div class="text-[11px] font-bold">{cat.name}<span class="mx-[1px]">/</span></div>
                 ))}
             </div>
         </div>
-        <div class="info font-sans font-normal md:font-bold md:flex gap-10 mx-6 md:mx-0 mt-10 mb-20 md:my-28 tracking-0 text-xs">
-            <div class="credit whitespace-pre-wrap">{work.acf.credit}</div>
-            <div class="mt-52 md:mt-10">
+        <div class="info font-sans font-normal lg:font-bold lg:flex gap-10 mx-6 lg:mx-0 mt-10 mb-20 lg:my-28 tracking-0 text-xs">
+            <div class="credit whitespace-pre-wrap ">{work.acf.credit}</div>
+            <div class="mt-52 lg:mt-10 w-fit">
                 <div set:html={work.acf.description}/>
             </div>
         </div>
