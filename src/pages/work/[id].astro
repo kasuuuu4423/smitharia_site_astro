@@ -25,8 +25,8 @@ const workCats = getCatsFromWork(work, cats);
             </div>
         </div>
         <div class="info font-sans font-normal lg:font-bold lg:flex gap-10 mx-6 lg:mx-0 mt-10 mb-20 lg:my-28 tracking-0 text-xs">
-            <div class="credit whitespace-pre-wrap ">{work.acf.credit}</div>
-            <div class="mt-52 lg:mt-10 w-fit">
+            <div class="credit whitespace-pre w-fit break-all tracking-tight">{work.acf.credit}</div>
+            <div class="mt-52 lg:mt-10">
                 <div set:html={work.acf.description}/>
             </div>
         </div>
