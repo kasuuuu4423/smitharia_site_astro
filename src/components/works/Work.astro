@@ -1,7 +1,7 @@
 ---
 import { type Work } from '../../lib/WP';
 import ToggleFilteredImage from '../common/ToggleFilteredImage.astro';
-import { convertImagePathToFiltered } from '../../lib/WP';
+import { decodeHtmlEscape } from '../../lib/Util';
 import { parentClass } from '../common/ToggleFilteredImage.astro';
 interface Props {
 	work: Work;
@@ -43,7 +43,7 @@ const workClass = parentClass
 			-translate-y-1/2
 			drop-shadow
 			font-serif
-			ml-10">{work.title.rendered}</h2>
+			ml-10">{decodeHtmlEscape(work.title.rendered)}</h2>
 	</a>
 </div>
 

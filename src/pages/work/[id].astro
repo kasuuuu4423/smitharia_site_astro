@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getWorks, getWork, getCatsFromWork, getRawCats } from '../../lib/WP';
+import { decodeHtmlEscape } from '../../lib/Util';
 
 export async function getStaticPaths() {
     const works = await getWorks({'per_page': "100"});
@@ -17,7 +18,7 @@ const workCats = getCatsFromWork(work, cats);
     <div class="w-full text-white">
         <img class="w-full h-auto" src={work.acf.thumbnail.url} alt={work.acf.thumbnail.alt==""?work.title.rendered:work.acf.thumbnail.alt}>
         <div class="mt-6 lg:-mt-6 ml-6 lg:ml-16">
-            <h1 class="text-xl mb-5 lg:mb-0 lg:text-5xl font-black">{work.title.rendered}</h1>
+            <h1 class="text-xl mb-5 lg:mb-0 lg:text-5xl font-black">{decodeHtmlEscape(work.title.rendered)}</h1>
             <div class="flex flex-wrap">
                 {workCats.map((cat) => (
                     <div class="text-[11px] font-bold">{cat.name}<span class="mx-[1px]">/</span></div>
