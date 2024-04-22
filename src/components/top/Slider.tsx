@@ -28,7 +28,7 @@ const Slider = (props: {works: Work[]}) =>{
                 {props.works.map(work=>
                     <SwiperSlide className='w-full [&_h2]:hover:opacity-100 [&_h2]:hover:translate-y-0' key={work.id}>
                         <a href={"/work/"+work.id}>
-                            <img className="w-full h-full object-cover object-bottom" loading='lazy' src={work.acf.thumbnail.url} alt={work.title.rendered} />
+                            <img className="w-full h-full object-cover object-center" loading='lazy' src={work.acf.thumbnail.url} alt={work.title.rendered} />
                         </a>
                         <a href={"/work/"+work.id}>
                             <h2 className='
@@ -49,7 +49,12 @@ const Slider = (props: {works: Work[]}) =>{
             </Swiper>
             <style>{`
             .swiper-slide{
-                height: 80vh;
+                height: 50vh;
+            }
+            @media (min-width: 768px){
+                .swiper-slide{
+                    height: 80vh;
+                }
             }
             `}</style>
         </section>
