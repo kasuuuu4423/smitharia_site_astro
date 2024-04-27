@@ -27,7 +27,7 @@ const { name } = Astro.props;
 <script>
     window.addEventListener('load', ()=>{
     //fontSize: `clamp(48px, ${100 / str.length}vw, 96px)`
-        const textbox = document.querySelector('.textbox');
+        const textbox = document.querySelector('.textbox') as HTMLElement;
         if(!textbox) return console.error('textbox not found');
         const str = textbox.textContent;
         const windowHeight = window.innerHeight;
