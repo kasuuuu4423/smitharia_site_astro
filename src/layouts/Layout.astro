@@ -57,6 +57,32 @@ const { title, pagename } = Astro.props;
 		<script src="https://kit.fontawesome.com/24612b40c8.js" crossorigin="anonymous"></script>
 	</head>
 	<body>
+		<div id="shutter" class="z-50 fixed top-0 left-0 w-full h-full">
+			<div class="bg-[#010101] w-full h-full"></div>
+			<svg class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/6 md:w-1/12" viewBox="0 0 546.89 546.89">
+				<defs>
+					<style>
+					.cls-1, .cls-2 {
+						stroke-width: 0px;
+					}
+
+					.cls-2 {
+						fill: #fff;
+					}
+					</style>
+				</defs>
+				<g id="_レイヤー_2-2" data-name="レイヤー 2">
+					<rect class="cls-1" width="546.89" height="546.89" rx="50.89" ry="50.89"/>
+				</g>
+				<g id="_レイヤー_1-2" data-name="レイヤー 1">
+					<path class="cls-2" d="M93.75,278.71h2.45v124.96h-50.3v-103.38l47.85-21.6v.02Z"/>
+					<path class="cls-2" d="M48.37,206.18h-2.45v-53.96h50.3v32.38l-47.85,21.6v-.02Z"/>
+					<path class="cls-2" d="M290.24,257.85h-58.87v84.73c0,25.02,10.23,35.69,29.44,35.69,15.95,0,29.04-7.36,34.75-14.73l2.45,1.09c-6.13,15.09-26.57,41.58-65.03,41.58-26.18,0-52.35-15.33-52.35-34.59,0-46,1.63-113.81,1.63-113.81h-37.98v-2.23l82.96-36.27h3.26v17.28h68.43l-8.72,21.22.02.04Z"/>
+					<path class="cls-2" d="M469.42,403.67v-103.78c0-25.76-8.18-46-32.72-46-17.18,0-26.99,5.89-31.89,12.52-1.23,1.47-2.05,5.89-2.05,9.93v127.33h-50.3v-209.97c0-3.68-.86-5.79-4.79-7.96-4.94-2.71-12.6-6.55-19.75-10.07v-2.21l71.97-31.93h3.26l-1.23,122.31.82.36c7.36-12.14,31.07-39.75,69.92-39.75,35.99,0,47.43,23.92,47.43,56.31v122.91h-50.72.04Z"/>
+				</g>
+			</svg>
+			<img class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/6 md:w-1/12" src="/ith_motion.gif"  alt="ith">
+		</div>
 		<BG/>
 		<div class="md:grid gap-20 pt-48 md:grid-cols-[180px_minmax(0,auto)] p-0 md:p-20 md:pr-32 font-serif">
 			<Sidebar/>
@@ -101,4 +127,22 @@ const { title, pagename } = Astro.props;
 			Courier New,
 			monospace;
 	}
+	#shutter {
+		transition: 0.5s;
+	}
+	#shutter.hidden {
+		display: block;
+		opacity: 0;
+		pointer-events: none;
+	}
 </style>
+
+<script>
+	window.addEventListener('load', ()=>{
+		const shutter = document.getElementById('shutter');
+		setTimeout(()=>{
+			shutter?.classList.add('hidden');
+		}, 300);
+		//shutter?.classList.add('hidden');
+	})
+</script>
