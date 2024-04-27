@@ -8,7 +8,7 @@ const { name } = Astro.props;
 ---
 
 <div class="pagename fixed z-10 mt-[190px] md:mt-[80px] mr-0 md:mr-20 top-0 right-0">
-    <div class="textbox tracking-widest text-6xl md:text-8xl font-black text-white">
+    <div class="textbox tracking-widest text-6xl font-black text-white">
         {name}
     </div>
 </div>
@@ -17,7 +17,24 @@ const { name } = Astro.props;
     .pagename .textbox{
         writing-mode:  vertical-rl;
     }
+    @media screen and (min-width: 768px){
+        .pagename .textbox{
+            font-size: clamp(48px, calc(100vw / 8), 96px);
+        }
+    }
 </style>
 
 <script>
+    window.addEventListener('load', ()=>{
+    //fontSize: `clamp(48px, ${100 / str.length}vw, 96px)`
+        const textbox = document.querySelector('.textbox');
+        if(!textbox) return console.error('textbox not found');
+        const str = textbox.textContent;
+        const windowHeight = window.innerHeight;
+        if(str && windowHeight < 96 * str.length){
+            const fontSize = windowHeight / str.length * 1.5;
+            console.log(fontSize);
+            textbox.style.fontSize = fontSize + "px";
+        }
+    });
 </script>
