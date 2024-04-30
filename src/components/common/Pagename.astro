@@ -33,7 +33,6 @@ const { name } = Astro.props;
         const windowHeight = window.innerHeight;
         if(str && windowHeight < 96 * str.length){
             const fontSize = windowHeight / str.length * 1.5;
-            console.log(fontSize);
             textbox.style.fontSize = fontSize + "px";
         }
     });
