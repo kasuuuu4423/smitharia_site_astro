@@ -6,20 +6,20 @@ const shuffleArray = (array: any[]) => {
     const cloneArray = [...array]
 
     for (let i = cloneArray.length - 1; i >= 0; i--) {
-      let rand = Math.floor(Math.random() * (i + 1))
-      // 配列の要素の順番を入れ替える
-      let tmpStorage = cloneArray[i]
-      cloneArray[i] = cloneArray[rand]
-      cloneArray[rand] = tmpStorage
+        let rand = Math.floor(Math.random() * (i + 1))
+        // 配列の要素の順番を入れ替える
+        let tmpStorage = cloneArray[i]
+        cloneArray[i] = cloneArray[rand]
+        cloneArray[rand] = tmpStorage
     }
 
     return cloneArray
-  }
+}
 
-const members = shuffleArray(await getMembers());
+const members = await getMembers();
 ---
 
-<section class="members">
+<section class="members flex flex-wrap">
     {members.map(member =>
         <Member memberInfo={member} />
     )}
@@ -31,4 +31,10 @@ const members = shuffleArray(await getMembers());
 </style>
 
 <script>
+    const members = document.getElementsByClassName('member') as HTMLCollectionOf<HTMLElement>;
+    const randomOrders = Array.from({ length: members.length }, (_, i) => i);
+    randomOrders.sort(() => Math.random() - 0.5);
+    for(let i = 0; i < members.length; i++) {
+        members[i].style.order = randomOrders[i].toString();
+    }
 </script>
