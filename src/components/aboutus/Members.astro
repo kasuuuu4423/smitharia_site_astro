@@ -1,8 +1,14 @@
 ---
 import { getMembers } from '../../lib/WP';
 import Member from './Member.astro';
+interface Props {
+    limited?: boolean;
+}
+const { limited } = Astro.props;
 
 const shuffleArray = (array: any[]) => {
+    
+
     const cloneArray = [...array]
 
     for (let i = cloneArray.length - 1; i >= 0; i--) {
@@ -20,6 +26,9 @@ const members = await getMembers();
 ---
 
 <section class="members flex flex-wrap">
+    {limited &&
+        <input type="hidden" name="limited" value="true">
+    }
     {members.map(member =>
         <Member memberInfo={member} />
     )}
@@ -33,8 +42,11 @@ const members = await getMembers();
 <script>
     const members = document.getElementsByClassName('member') as HTMLCollectionOf<HTMLElement>;
     const randomOrders = Array.from({ length: members.length }, (_, i) => i);
-    randomOrders.sort(() => Math.random() - 0.5);
-    for(let i = 0; i < members.length; i++) {
-        members[i].style.order = randomOrders[i].toString();
+    const limitedInput = document.querySelector('input[name="limited"]') as HTMLInputElement;
+    if(!limitedInput) {
+        randomOrders.sort(() => Math.random() - 0.5);
+        for(let i = 0; i < members.length; i++) {
+            members[i].style.order = randomOrders[i].toString();
+        }
     }
 </script>

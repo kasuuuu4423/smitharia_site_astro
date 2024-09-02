@@ -5,10 +5,11 @@ import { decodeHtmlEscape } from '../../lib/Util';
 import { parentClass } from '../common/ToggleFilteredImage.astro';
 interface Props {
 	work: Work;
+	limited?: boolean;
 }
 
 
-const { work } = Astro.props;
+const { work, limited } = Astro.props;
 const workClass = parentClass
 	+ `
 		[&_h2]:hover:opacity-100
@@ -24,7 +25,7 @@ const workClass = parentClass
 <div
 	class={workClass}
 >
-	<a class="" href={"/work/"+work.id}>
+	<a class="" href={"/" + (limited ? "limited/":"") + "work/" + work.id}>
 		<ToggleFilteredImage
 			imgPath={work.acf.thumbnail.url}
 			alt={work.acf.thumbnail.alt}
