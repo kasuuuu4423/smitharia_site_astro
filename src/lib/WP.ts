@@ -30,6 +30,7 @@ export interface Work {
         extend_column: boolean,
         extend_row: boolean,
         is_recommend: boolean,
+        limited: boolean,
     },
     id: number,
     categories: number[],

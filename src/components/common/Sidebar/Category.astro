@@ -4,8 +4,9 @@ import type { CatType } from '../../../lib/WP'
 interface Props {
     title: string,
     subcats: CatType[],
+    urlPrefix?: string
 }
-const { title, subcats } = Astro.props;
+const { title, subcats, urlPrefix } = Astro.props;
 ---
 
 <ul class="mb-2 md:mb-1 text-white">
@@ -16,7 +17,7 @@ const { title, subcats } = Astro.props;
     <ul class="category hidden md:block ml-4">
         {subcats.map(cat=>
             <li class="mb-2 md:mb-1">
-                <a href={"/"+cat.slug}>
+                <a href={"/"+ urlPrefix +cat.slug}>
                     {cat.name}
                 </a>
             </li>

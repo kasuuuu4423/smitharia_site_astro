@@ -1,12 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Works from '../components/works/Works.astro';
-import Pagename from '../components/common/Pagename.astro';
 ---
 
 <Layout title="" pagename="works">
 	<main class="w-full">
-		<Works/>
+		<Works limited={false}/>
 	</main>
 </Layout>
 
