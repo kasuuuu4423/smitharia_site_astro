@@ -55,6 +55,7 @@ const members = await getMembers();
             for(let i = 0; i < members.length; i++) {
                 const order = members[i].dataset.order;
                 if(order) members[i].style.order = order;
+                else members[i].style.order = "99";
             }
         }
     }
