@@ -8,7 +8,7 @@ interface Props {
 const { memberInfo } = Astro.props;
 ---
 
-<div class="member mb-52 px-6 lg:p-0">
+<div data-order={memberInfo.acf.limited_order} class="member mb-52 px-6 lg:p-0">
 	<div class="lg:grid md:grid-cols-[260px,1fr] grid-cols-[100px,1fr] gap-14">
 		<div class="member-image h-[330px]">
 			<img class="h-full w-full object-cover" src={memberInfo.acf.pic} alt={memberInfo.acf.name}>

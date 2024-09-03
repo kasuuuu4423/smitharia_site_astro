@@ -66,6 +66,7 @@ export interface MemberType {
         bio: string,
         english_bio: string,
         pic: string,
+        limited_order: number,
     },
     id: number,
 };

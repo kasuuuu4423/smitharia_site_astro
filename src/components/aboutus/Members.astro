@@ -49,4 +49,12 @@ const members = await getMembers();
             members[i].style.order = randomOrders[i].toString();
         }
     }
+    else{
+        const limited = limitedInput.value === "true";
+        if(limited){
+            for(let i = 0; i < members.length; i++) {
+                members[i].style.order = members[i].dataset.order;
+            }
+        }
+    }
 </script>
