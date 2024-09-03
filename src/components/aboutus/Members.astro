@@ -53,7 +53,8 @@ const members = await getMembers();
         const limited = limitedInput.value === "true";
         if(limited){
             for(let i = 0; i < members.length; i++) {
-                members[i].style.order = members[i].dataset.order;
+                const order = members[i].dataset.order;
+                if(order) members[i].style.order = order;
             }
         }
     }
