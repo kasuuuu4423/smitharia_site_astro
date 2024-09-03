@@ -8,10 +8,12 @@ import Work from './Work.astro';
 interface Props {
     filterCatId?: number;
     disableSlider?: boolean;
+    limited: boolean;
 }
-const { filterCatId, disableSlider } = Astro.props;
+const { filterCatId, disableSlider, limited } = Astro.props;
 
 let works = await getWorks({'per_page': "100"});
+if(!limited) works = works.filter(work => !work.acf.limited);
 const recommendWorks = works.filter(work => work.acf.is_recommend);
 
 if(filterCatId) {
@@ -30,7 +32,7 @@ works = works.sort((a, b) => parseInt(b.acf.period.split(" - ")[0]) - parseInt(a
     }
     <div class="others block md:grid grid-flow-dense md:grid-cols-2 lg:grid-cols-3 md:grid-rows-[200px] md:gap-5">
         {
-            works.map(work => <Work work={work}/>)
+            works.map(work => <Work limited={limited} work={work}/>)
         }
     </div>
 </section>

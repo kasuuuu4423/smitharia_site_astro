@@ -8,9 +8,10 @@ import '@fontsource/libre-caslon-text';
 interface Props {
 	title: string;
 	pagename: string;
+	limited?: boolean;
 }
 
-const { title, pagename } = Astro.props;
+const { title, pagename, limited } = Astro.props;
 ---
 
 <!doctype html>
@@ -28,6 +29,8 @@ const { title, pagename } = Astro.props;
 		
 		<meta charset="UTF-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+		{limited && <meta name="robots" content="noindex"/>}
 		
 
 		<!-- 一般的なタグ -->
@@ -85,7 +88,7 @@ const { title, pagename } = Astro.props;
 		</div>
 		<BG/>
 		<div class="md:grid gap-20 pt-48 md:grid-cols-[180px_minmax(0,auto)] p-0 md:p-20 md:pr-32 font-serif">
-			<Sidebar/>
+			<Sidebar limited={limited}/>
 			<Pagename name={pagename}/>
 			<Contacts/>
 			<div class="mt-1">
