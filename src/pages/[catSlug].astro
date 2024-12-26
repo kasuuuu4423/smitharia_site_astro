@@ -6,6 +6,7 @@ import { getRawCats } from '../lib/WP.ts';
 export async function getStaticPaths() {
     const cats = await getRawCats();
     const catSlug = cats.map((cat) => {return{params: {catSlug: encodeURI(cat.slug)}}});
+	console.log(catSlug);
     return catSlug;
 }
 const cats = await getRawCats();

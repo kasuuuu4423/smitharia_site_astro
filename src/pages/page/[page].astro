@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Works from '../../components/works/Works.astro';
+import { getWorks } from '../../lib/WP';
+
+export async function getStaticPaths() {
+    const works = await getWorks({'per_page': "10"});
+    return [{
+        params: {
+            page: "1"
+        }}
+    ];
+}
+---
+
+<Layout title="" pagename="works">
+	<main class="w-full">
+		<Works limited={false}/>
+	</main>
+</Layout>
+
+<style>
+	main {
+	}
+</style>
+
+<script>
+</script>

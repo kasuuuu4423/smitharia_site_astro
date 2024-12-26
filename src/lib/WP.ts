@@ -42,6 +42,11 @@ export interface Work {
     }
 };
 
+export interface WPHeader {
+    x_wp_total: string,
+    x_wp_totalpages: string,
+};
+
 
 export interface CatType {
     id: number,
@@ -126,6 +131,30 @@ export async function getWorks(
     const worksRes = await fetch(u);
     const works: Work[] = await worksRes.json();
     return works;
+}
+
+export async function getWorksPage(
+    page: number,
+    params: WPParamType = {} as WPParamType
+): Promise<Work[]>{
+    const u = new URL(WPWorkUrl);
+    const p: {[key: string]: string} = deleteEmptyParam(params);
+    p.page = page.toString();
+    u.search = objectToQueryString(p);
+    const worksRes = await fetch(u);
+    const works: Work[] = await worksRes.json();
+    return works;
+}
+
+export async function getWorksHeader(
+    params: WPParamType = {} as WPParamType
+): Promise<WPHeader>{
+    const u = new URL(WPWorkUrl);
+    const p: {[key: string]: string} = deleteEmptyParam(params);
+    u.search = objectToQueryString(p);
+    const worksRes = await fetch(u);
+    const headers = worksRes.headers as unknown;
+    return headers as WPHeader;
 }
 
 export async function getCatById(id: number): Promise<CatType>{

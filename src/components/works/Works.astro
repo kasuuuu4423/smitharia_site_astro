@@ -12,7 +12,7 @@ interface Props {
 }
 const { filterCatId, disableSlider, limited } = Astro.props;
 
-let works = await getWorks({'per_page': "100"});
+let works = await getWorks({'per_page': "10"});
 if(!limited) works = works.filter(work => !work.acf.limited);
 const recommendWorks = works.filter(work => work.acf.is_recommend);
 
