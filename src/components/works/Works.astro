@@ -1,7 +1,7 @@
 ---
-import { getWorks } from '../../lib/WP.ts';
-import {type CatType } from '../../lib/WP.ts';
-import Slider from '../top/Slider.tsx';
+import { getWorks } from '../../lib/WP';
+import {type CatType } from '../../lib/WP';
+import Slider from '../top/Slider';
 import Scrollate from '../common/Scrollate.astro';
 import Work from './Work.astro';
 
@@ -12,7 +12,7 @@ interface Props {
 }
 const { filterCatId, disableSlider, limited } = Astro.props;
 
-let works = await getWorks({'per_page': "10"});
+let works = await getWorks({'per_page': "50"});
 if(!limited) works = works.filter(work => !work.acf.limited);
 const recommendWorks = works.filter(work => work.acf.is_recommend);
 
