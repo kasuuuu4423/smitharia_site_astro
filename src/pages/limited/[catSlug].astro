@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Works from '../../components/works/Works.astro';
+import Works from '../../components/works/Works';
 import { getRawCats } from '../../lib/WP.ts';
 
 export async function getStaticPaths() {
@@ -15,7 +15,7 @@ const cat = cats.find((cat) => cat.slug === catSlug);
 
 <Layout limited={true} title="" pagename={cat?cat.name:"works"}>
 	<main class="w-full">
-		<Works limited={true} disableSlider filterCatId={cat?.id}/>
+		<Works client:load limited={true} disableSlider filterCatId={cat?.id}/>
 	</main>
 </Layout>
 

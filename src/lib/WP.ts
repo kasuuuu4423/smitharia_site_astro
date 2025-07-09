@@ -7,6 +7,9 @@ export interface WPParamType {
     page?: string,
     orderby?: string,
     filter?: string,
+    meta_key?: string,
+    meta_value?: string,
+    meta_compare?: string,
 };
 
 interface WPImage {
@@ -125,12 +128,29 @@ export async function getWork(id: number): Promise<Work>{
 export async function getWorks(
     params: WPParamType = {} as WPParamType
 ): Promise<Work[]>{
-    const u = new URL(WPWorkUrl);
-    const p: {[key: string]: string} = deleteEmptyParam(params);
-    u.search = objectToQueryString(p);
-    const worksRes = await fetch(u);
-    const works: Work[] = await worksRes.json();
-    return works;
+    try {
+        const u = new URL(WPWorkUrl);
+        const p: {[key: string]: string} = deleteEmptyParam(params);
+        u.search = objectToQueryString(p);
+        const worksRes = await fetch(u);
+        
+        if (!worksRes.ok) {
+            console.error(`WordPress API error: ${worksRes.status} ${worksRes.statusText}`);
+            return [];
+        }
+        
+        const works: Work[] = await worksRes.json();
+        
+        if (!Array.isArray(works)) {
+            console.error('WordPress API returned non-array response:', works);
+            return [];
+        }
+        
+        return works;
+    } catch (error) {
+        console.error('Error fetching works:', error);
+        return [];
+    }
 }
 
 export async function getWorksPage(
@@ -218,6 +238,9 @@ function deleteEmptyParam(params: WPParamType): {[key: string]: string}{
     if(params.per_page === "") delete p.per_page;
     if(params.orderby === "") delete p.orderby;
     if(params.page === "") delete p.page;
+    if(params.meta_key === "") delete p.meta_key;
+    if(params.meta_value === "") delete p.meta_value;
+    if(params.meta_compare === "") delete p.meta_compare;
     return p as {[key: string]: string};
 }
 
@@ -227,6 +250,23 @@ function objectToQueryString(obj: {[key: string]: string}): string{
         queryString += key + "=" + obj[key] + "&";
     });
     return queryString;
+}
+
+export async function getRecommendedWorks(
+    params: WPParamType = {} as WPParamType
+): Promise<Work[]>{
+    try {
+        const recommendedParams = {
+            ...params,
+            is_recommend: "true",
+        };
+        const works = await getWorks(recommendedParams);
+        console.log(works);
+        return works;
+    } catch (error) {
+        console.error('Error fetching recommended works:', error);
+        return [];
+    }
 }
 
 export function convertImagePathToFiltered(imagePath: string): string{

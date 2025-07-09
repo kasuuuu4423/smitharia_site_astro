@@ -1,11 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Works from '../../components/works/Works.astro';
+import Works from '../../components/works/Works';
 ---
 
 <Layout limited={true} title="" pagename="works">
 	<main class="w-full">
-		<Works limited={true}/>
+		<Works client:load limited={true}/>
 	</main>
 </Layout>
 

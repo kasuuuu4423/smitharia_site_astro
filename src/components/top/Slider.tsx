@@ -3,11 +3,12 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Pagination } from 'swiper/modules';
+import ToggleFilteredImage from '../common/ToggleFilteredImage';
 
-import { type Work } from '../../lib/WP';
+import { type Work } from '../../lib/WP.ts';
 
-const Slider = (props: {works: Work[]}) =>{
-    return(
+const Slider = (props: { works: Work[] }) => {
+    return (
         <section className='
             w-full
             [&_.swiper-pagination-bullet]:bg-white
@@ -25,12 +26,12 @@ const Slider = (props: {works: Work[]}) =>{
                     "clickable": true,
                 }}
             >
-                {props.works.map(work=>
+                {props.works.map(work =>
                     <SwiperSlide className='w-full [&_h2]:hover:opacity-100 [&_h2]:hover:translate-y-0' key={work.id}>
-                        <a href={"/work/"+work.id}>
+                        <a href={"/work/" + work.id}>
                             <img className="w-full h-full object-cover object-center" loading='lazy' src={work.acf.thumbnail.url} alt={work.title.rendered} />
                         </a>
-                        <a href={"/work/"+work.id}>
+                        <a href={"/work/" + work.id}>
                             <h2 className='
                                 text-xl
                                 -mt-28
