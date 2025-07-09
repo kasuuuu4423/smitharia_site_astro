@@ -12,7 +12,7 @@ interface Props {
 }
 const { filterCatId, disableSlider, limited } = Astro.props;
 
-let works = await getWorks({'per_page': "50"});
+let works = await getWorks({'per_page': "20"});
 if(!limited) works = works.filter(work => !work.acf.limited);
 const recommendWorks = works.filter(work => work.acf.is_recommend);
 
@@ -43,4 +43,17 @@ works = works.sort((a, b) => parseInt(b.acf.period.split(" - ")[0]) - parseInt(a
 </style>
 
 <script>
+    import { getWorks } from "../../lib/WP";
+    import Work from "./Work.astro";
+    let page = 2;
+
+    window.addEventListener('scroll', async () => {
+        if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 200) {
+            const works = await getWorks({'per_page': "20", 'page': page.toString()});
+            const workContainer = document.querySelector('.others');
+            works.forEach(work => {
+            });
+            page++;
+        }
+    });
 </script>

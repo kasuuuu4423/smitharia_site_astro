@@ -1,0 +1,157 @@
+# smitharia プロジェクト Cursor ルール
+
+## プロジェクト概要
+これはクリエイティブプラットフォーム「smitharia」のオフィシャルウェブサイトです。
+Astro + React + TypeScript + Tailwind CSS + WordPress REST APIで構築されています。
+
+## 技術スタック・制約
+- **フレームワーク**: Astro 4.2（SSG）
+- **コンポーネント**: React 18（インタラクティブ要素のみ）
+- **型システム**: TypeScript（厳密な型付け必須）
+- **スタイリング**: Tailwind CSS（カスタムクラス優先）
+- **CMS**: WordPress REST API（ヘッドレス構成）
+- **デプロイ**: Firebase Hosting
+
+## コーディング規約
+
+### 1. ファイル構造・命名
+- Astroコンポーネント: PascalCase (例: `Works.astro`)
+- Reactコンポーネント: PascalCase (例: `Slider.tsx`)
+- ユーティリティ関数: camelCase (例: `getWorks()`)
+- 型定義: PascalCase + Type suffix (例: `WorkType`)
+- 定数: UPPER_SNAKE_CASE (例: `WP_BASE_URL`)
+
+### 2. Astroコンポーネント
+```astro
+---
+// TypeScript frontmatter
+import type { ComponentProps } from '../types';
+
+interface Props {
+    // 必要なpropsを明確に定義
+}
+const { prop1, prop2 } = Astro.props;
+---
+
+<!-- HTMLテンプレート -->
+<section class="...">
+    <!-- コンテンツ -->
+</section>
+
+<style>
+    /* 必要に応じてscoped CSS */
+</style>
+
+<script>
+    /* クライアントサイドスクリプト */
+</script>
+```
+
+### 3. React コンポーネント
+- 必ず`client:load`または`client:visible`ディレクティブを使用
+- TypeScriptインターフェースで厳密な型定義
+- 関数型コンポーネントを使用
+
+### 4. WordPress API連携
+- `src/lib/WP.ts`の関数を使用
+- 新しいAPI関数は既存パターンに従う
+- エラーハンドリングを必ず実装
+- 型定義を`WP.ts`に集約
+
+### 5. スタイリング規約
+- Tailwind CSSクラスを優先使用
+- カスタムカラー: `text-red`, `text-green`, `text-blue`
+- レスポンシブ: モバイルファースト (`md:`, `lg:`クラス使用)
+- フォント: `font-serif`(big-caslon-fb), `font-sans`(游ゴシック)
+
+## 特殊機能・要件
+
+### 1. 限定公開機能
+- パブリック版: `/` ルート
+- 限定版: `/limited/` ルート
+- `limited` propでコンポーネント切り替え
+- 限定版は`<meta name="robots" content="noindex"/>`必須
+
+### 2. 作品管理
+- `Work`インターフェース使用
+- `limited`フラグによる表示制御
+- カテゴリフィルタリング対応
+- 期間によるソート機能
+
+### 3. 多言語対応
+- 日本語がメイン
+- 英語はサブテキストとして併記
+- `text-red`クラスで英語テキストをマーク
+
+## コード品質
+
+### 1. 必須チェック
+- `npm run lint:precommit` - ESLintチェック
+- `npm run fmt:precommit` - Prettierフォーマット
+- TypeScript型エラー0個
+
+### 2. コミット前
+- Huskyによる自動チェック実行
+- 型安全性の確保
+- アクセシビリティ考慮
+
+## 禁止事項
+- `any`型の使用禁止
+- インラインスタイルの使用禁止
+- 未使用importの残存禁止
+- WordPressエンドポイントの直接fetch（WP.ts関数を使用）
+
+## 推奨パターン
+
+### 1. 新しいページ作成
+```astro
+---
+import Layout from '../layouts/Layout.astro';
+// 必要なコンポーネントimport
+
+interface Props {
+    limited?: boolean;
+}
+const { limited } = Astro.props;
+---
+
+<Layout limited={limited} title="ページタイトル" pagename="ページ名">
+    <main class="w-full">
+        <!-- コンテンツ -->
+    </main>
+</Layout>
+```
+
+### 2. WordPress データ取得
+```typescript
+// 既存のWP.ts関数を使用
+const works = await getWorks({'per_page': "50"});
+if (!limited) {
+    works = works.filter(work => !work.acf.limited);
+}
+```
+
+### 3. エラーハンドリング
+```typescript
+try {
+    const data = await getWorks(params);
+    return data;
+} catch (error) {
+    console.error('作品取得エラー:', error);
+    return [];
+}
+```
+
+## デバッグ・開発
+- 開発サーバー: `npm run dev` (host 0.0.0.0)
+- ビルド: `npm run build`
+- プレビュー: `npm run preview`
+- WordPress API: `https://smitharia.shimizuyasushi.com/wp-json/wp/v2/`
+
+## 注意点
+- 画像ドメイン: `smitharia.shimizuyasushi.com` のみ許可
+- Firebase Analytics設定済み
+- Google Analytics (Partytown使用)
+- SEO対応必須（特に限定版のnoindex設定）
+
+このルールに従ってコードを記述し、smithariaブランドに適したクリエイティブなウェブサイトを構築してください。 
