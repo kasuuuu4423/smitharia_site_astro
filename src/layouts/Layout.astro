@@ -17,8 +17,8 @@ const { title, pagename, limited } = Astro.props;
 <!doctype html>
 <html lang="ja">
 	<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
-        <script type="text/partytown" src="https://www.googletagmanager.com/gtag/js?id=G-KKSF2HX9MF"></script>
-        <script type="text/partytown">
+        <script type="text/partytown" src="https://www.googletagmanager.com/gtag/js?id=G-KKSF2HX9MF" is:inline></script>
+        <script type="text/partytown" is:inline>
             window.dataLayer = window.dataLayer || [];
             function gtag() {
                 dataLayer.push(arguments);
@@ -57,7 +57,7 @@ const { title, pagename, limited } = Astro.props;
 
 		<title>{title==""?"smitharia":title+" | smitharia"}</title>
 		<link rel="stylesheet" href="https://use.typekit.net/kwl5mrn.css">
-		<script src="https://kit.fontawesome.com/24612b40c8.js" crossorigin="anonymous"></script>
+		<script src="https://kit.fontawesome.com/24612b40c8.js" crossorigin="anonymous" is:inline></script>
 	</head>
 	<body>
 		<div id="shutter" class="z-50 fixed top-0 left-0 w-full h-full">
@@ -99,7 +99,7 @@ const { title, pagename, limited } = Astro.props;
 			<PageTop/>
 		</footer>
 
-		<script type="module">
+		<script type="module" is:inline>
 			// Import the functions you need from the SDKs you need
 			import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 			import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
@@ -120,7 +120,6 @@ const { title, pagename, limited } = Astro.props;
 		  
 			// Initialize Firebase
 			const app = initializeApp(firebaseConfig);
-			const analytics = getAnalytics(app);
 		  </script>
 	</body>
 </html>

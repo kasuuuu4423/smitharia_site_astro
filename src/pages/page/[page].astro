@@ -4,7 +4,7 @@ import Works from '../../components/works/Works';
 import { getWorks } from '../../lib/WP';
 
 export async function getStaticPaths() {
-    const works = await getWorks({'per_page': "10"});
+    await getWorks({'per_page': "10"});
     return [{
         params: {
             page: "1"
