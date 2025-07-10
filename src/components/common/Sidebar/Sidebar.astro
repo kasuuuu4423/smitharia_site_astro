@@ -96,7 +96,7 @@ const cats = await getCats();
 
     const catTitle = document.querySelectorAll('.cat-title');
     catTitle?.forEach((title) => {
-        title.addEventListener('click', function(e){
+        title.addEventListener('click', function(){
             title.querySelector(".tri")?.classList.toggle('active');
             title.nextElementSibling?.classList.toggle('hidden');
         });

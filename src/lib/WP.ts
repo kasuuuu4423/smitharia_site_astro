@@ -271,6 +271,5 @@ export async function getRecommendedWorks(
 
 export function convertImagePathToFiltered(imagePath: string): string{
     const filename = imagePath.split("/").pop();
-    const directory = imagePath.split("/").slice(0, -1).join("/");
     return baseUrl + "/wp-content/uploads/filtered/filtered_" + filename;
 }

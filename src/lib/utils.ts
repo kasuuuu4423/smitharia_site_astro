@@ -1,8 +1,8 @@
-import WPFetch, { type CategoryType, type WorkType as WpWorkType, type MemberType as WpMemberType } from './Wp';
+import { getWorks, getCats, getRawCats, getWork, getCatsFromWork, getPreference, getMembers, type Work, type CatType, type MemberType } from './WP';
 
 // 型定義をエクスポート
-export type { CategoryType, WpMemberType as MemberType };
-export type WorkType = WpWorkType & {
+export type { CatType, MemberType };
+export type WorkType = Work & {
   acf?: {
     thumbnail?: {
       url: string;
@@ -16,9 +16,6 @@ export type WorkType = WpWorkType & {
   };
 };
 
-// CatTypeをCategoryTypeと互換性を持たせる
-export interface CatType extends CategoryType {}
-
 interface CategorizedType {
   works?: CatType[];
   studies?: CatType[];
@@ -26,26 +23,26 @@ interface CategorizedType {
   [key: string]: CatType[] | undefined;
 }
 
-export async function getWorks(params?: Record<string, string | number>): Promise<WorkType[]> {
-  return await WPFetch.getWorks(params) as unknown as WorkType[];
+export async function getWorksFromUtils(params?: Record<string, string | number>): Promise<WorkType[]> {
+  return await getWorks(params) as unknown as WorkType[];
 }
 
-export async function getWork(id: string | number): Promise<WorkType | null> {
+export async function getWorkFromUtils(id: string | number): Promise<WorkType | null> {
   const numId = typeof id === 'string' ? parseInt(id, 10) : id;
-  const works = await WPFetch.getWorks({ id: numId });
+  const works = await getWorks({ id: numId });
   return works.length > 0 ? works[0] as unknown as WorkType : null;
 }
 
-export async function getRawCats(): Promise<CategoryType[]> {
-  return await WPFetch.getCategories();
+export async function getRawCatsFromUtils(): Promise<CatType[]> {
+  return await getRawCats();
 }
 
-export async function getCats(): Promise<CategorizedType> {
-  const cats = await WPFetch.getCategories();
+export async function getCatsFromUtils(): Promise<CategorizedType> {
+  const cats = await getRawCats();
   const result: CategorizedType = {};
 
   // カテゴリを種類ごとに分類
-  cats.forEach(cat => {
+  cats.forEach((cat: CatType) => {
     // ここでは例として、特定のカテゴリーを分類しています
     // 実際のプロジェクトに合わせて調整してください
     if (cat.slug.includes('work')) {
@@ -63,7 +60,7 @@ export async function getCats(): Promise<CategorizedType> {
   return result;
 }
 
-export function getCatsFromWork(work: WorkType, allCats: CategoryType[]): CategoryType[] {
+export function getCatsFromWorkFromUtils(work: WorkType, allCats: CatType[]): CatType[] {
   if (!work.categories || !Array.isArray(work.categories)) {
     return [];
   }
@@ -97,11 +94,11 @@ export function convertImagePathToFiltered(path: string): string {
 }
 
 // 追加：getPreference関数
-export async function getPreference(): Promise<unknown> {
-  return await WPFetch.getPreference();
+export async function getPreferenceFromUtils(): Promise<unknown> {
+  return await getPreference();
 }
 
 // 追加：getMembers関数
-export async function getMembers(): Promise<unknown> {
-  return await WPFetch.getMembers();
+export async function getMembersFromUtils(): Promise<unknown> {
+  return await getMembers();
 } 
