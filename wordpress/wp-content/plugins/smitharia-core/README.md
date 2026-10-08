@@ -4,7 +4,10 @@ Smitharia 固有の WordPress 処理を Git 管理するためのプラグイン
 
 ## 機能
 
-- 画像アップロード時に `uploads/filtered/YYYY/MM/filtered-{filename}` を生成
+- 画像アップロード時はattachment IDだけをキューへ入れ、WordPress Cronが
+  `uploads/filtered/YYYY/MM/filtered-{filename}` をバックグラウンド生成
+- 生成は最大3回まで自動再試行し、重複実行をロックで防止
+- 「ツール → Smitharia Images」で待機・実行・完了・失敗件数を確認
 - 「ツール → Smitharia Images」から既存画像を5件ずつ再生成
 - `/wp/v2/posts?is_recommend=true` の安全なおすすめ絞り込み
 - `/wp/v2/posts?limited=exclude|include|only` の限定表示絞り込み
