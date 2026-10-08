@@ -2,129 +2,140 @@
 import type { MemberType } from '../../lib/WP';
 
 interface Props {
-	memberInfo: MemberType;
+  memberInfo: MemberType;
 }
 
 const { memberInfo } = Astro.props;
 ---
 
-<div data-order={memberInfo.acf.limited_order} class="member mb-52 px-6 lg:p-0">
-	<div class="block xl:grid md:grid-cols-[260px,1fr] grid-cols-[100px,1fr] gap-14">
-		<div class="member-image h-[330px]">
-			<img class="h-full w-full object-cover" src={memberInfo.acf.pic} alt={memberInfo.acf.name}>
-		</div>
-		<div class="info relative text-white mt-10 lg:pr-40 font-sans">
-			<div data-animated="false" class="heading-position absolute text-5xl font-serif right-32 lg:right-64 top-[-50px]">{memberInfo.acf.heading_position}</div>
-			<h3 class="text-xl font-bold mb-3">
-				{memberInfo.acf.name}
-				<div class="english-name font-serif -mt-3 text-[0.6rem] text-red font-thin">{memberInfo.acf.english_name}</div>
-			</h3>
-			<div class="position font-medium text-sm mb-4">
-				{memberInfo.acf.position}
-				<div class="english-position font-serif -mt-2 text-[0.6rem] text-green font-thin">{memberInfo.acf.english_position}</div>
-			</div>
-			<div id="bio" class="bio relative font-medium text-sm mb-4 leading-[3rem] whitespace-pre-wrap">
-				{memberInfo.acf.bio}
-				<div id="english-bio" class="english-bio absolute top-[0.6rem] font-serif text-[0.6rem] text-blue font-thin">{memberInfo.acf.english_bio}</div>
-			</div>
-		</div>
-	</div>
+<div data-order={memberInfo.acf.limited_order} class="member mb-28 px-6 lg:p-0">
+  <div class="block xl:grid md:grid-cols-[260px,1fr] grid-cols-[100px,1fr] gap-14">
+    <div class="member-image h-[330px]">
+      <img class="h-full w-full object-cover" src={memberInfo.acf.pic} alt={memberInfo.acf.name} />
+    </div>
+    <div class="info relative text-white mt-10 lg:pr-40 font-sans">
+      <div
+        data-animated="false"
+        class="heading-position absolute text-5xl font-serif right-32 lg:right-64 top-[-50px]"
+      >
+        {memberInfo.acf.heading_position}
+      </div>
+      <h2 class="text-xl font-bold mb-3">
+        {memberInfo.acf.name}
+        <div lang="en" class="english-name font-serif mt-2 text-base text-[#ff9292] font-normal">
+          {memberInfo.acf.english_name}
+        </div>
+      </h2>
+      <div class="position font-medium text-base mb-4">
+        {memberInfo.acf.position}
+        <div lang="en" class="english-position font-serif mt-2 text-base text-green font-normal">
+          {memberInfo.acf.english_position}
+        </div>
+      </div>
+      <div class="bio font-normal text-base mb-4 leading-relaxed whitespace-pre-wrap">
+        {memberInfo.acf.bio}
+        <div lang="en" class="english-bio mt-6 font-serif text-base text-[#a8b8ff] font-normal">
+          {memberInfo.acf.english_bio}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <style is:global>
-	.heading-position{
-		letter-spacing: -1rem;
-	}
-	.heading-position span{
-		top: 0;
-		left: 0;
-	}
-	.heading-position span:nth-child(2n){
-		transition: 10s cubic-bezier(0, 1, 0, 1);
-	}
-	.heading-position span:nth-child(2n+1){
-		transition: 30s cubic-bezier(0, 1, 0, 1);
-	}
+  .heading-position {
+    letter-spacing: -1rem;
+  }
+  .heading-position span {
+    top: 0;
+    left: 0;
+  }
+  .heading-position span:nth-child(2n) {
+    transition: 10s cubic-bezier(0, 1, 0, 1);
+  }
+  .heading-position span:nth-child(2n + 1) {
+    transition: 30s cubic-bezier(0, 1, 0, 1);
+  }
 </style>
 
 <script>
-	window.addEventListener("load", ()=>{
-		const tops = [] as number[][];
-		const lefts = [] as number[][];
-		const headingPosition = document.getElementsByClassName('heading-position');
+  window.addEventListener('load', () => {
+    const tops = [] as number[][];
+    const lefts = [] as number[][];
+    const headingPosition = document.getElementsByClassName('heading-position');
 
-		const animation = (i: number)=> {
-			if(i < headingPosition.length){
-				const position = headingPosition[i];
-				const spans = position.getElementsByTagName('span');
-				for(let j = 0; j < spans.length; j++){
-					// if(Math.random() * 2 < 1) tops[i][j]++;
-					// else tops[i][j]--;
-					// if(Math.random() * 2 < 1) lefts[i][j]++;
-					// else lefts[i][j]--;
-					spans[j].style.top = tops[i][j] + "px";
-					spans[j].style.left = lefts[i][j] + "px";
-				}
-			}
-		}
+    const animation = (i: number) => {
+      if (i < headingPosition.length) {
+        const position = headingPosition[i];
+        const spans = position.getElementsByTagName('span');
+        for (let j = 0; j < spans.length; j++) {
+          // if(Math.random() * 2 < 1) tops[i][j]++;
+          // else tops[i][j]--;
+          // if(Math.random() * 2 < 1) lefts[i][j]++;
+          // else lefts[i][j]--;
+          spans[j].style.top = tops[i][j] + 'px';
+          spans[j].style.left = lefts[i][j] + 'px';
+        }
+      }
+    };
 
-		const animationAll = ()=>{
-			for(let i = 0; i < headingPosition.length; i++){
-				animation(i);
-			}
-		}
+    const animationAll = () => {
+      for (let i = 0; i < headingPosition.length; i++) {
+        animation(i);
+      }
+    };
 
-		const withinScreenAnimation = ()=>{
-			const currentScroll = window.scrollY;
-			const currentScrollBottom = currentScroll + window.innerHeight;
-			for(let i = 0; i < headingPosition.length; i++){
-				const position = headingPosition[i];
-				const positionTop = position.getBoundingClientRect().top + currentScroll;
-				const positionBottom = position.getBoundingClientRect().bottom + currentScroll;
-				if(currentScroll < positionBottom && currentScrollBottom > positionTop){
-					if(position.getAttribute("data-animated") === "false"){
-						position.setAttribute("data-animated", "true");
-						setTimeout(()=>{
-							animation(i);
-						}, 300);
-					}
-				}
-			}
-		}
+    const withinScreenAnimation = () => {
+      const currentScroll = window.scrollY;
+      const currentScrollBottom = currentScroll + window.innerHeight;
+      for (let i = 0; i < headingPosition.length; i++) {
+        const position = headingPosition[i];
+        const positionTop = position.getBoundingClientRect().top + currentScroll;
+        const positionBottom = position.getBoundingClientRect().bottom + currentScroll;
+        if (currentScroll < positionBottom && currentScrollBottom > positionTop) {
+          if (position.getAttribute('data-animated') === 'false') {
+            position.setAttribute('data-animated', 'true');
+            setTimeout(() => {
+              animation(i);
+            }, 300);
+          }
+        }
+      }
+    };
 
-		for(let i = 0; i < headingPosition.length; i++){
-			if (headingPosition[i] != null && headingPosition[i].textContent != null) {
-				tops[i] = [];
-				lefts[i] = [];
-				const breakHeadingPosition = headingPosition[i].textContent?.split('');
-				const redPos = 0;
-				const greenPos = 3;
-				const bluePos = 5;
-				const classNames = "absolute";
-				const tagHeadingPosition = breakHeadingPosition?.map((char, index) => {
-					tops[i][index] = Math.random() * 120 - 60;
-					lefts[i][index] = Math.random() * 120 - 60;
-					if (index === redPos) {
-						return "<span class='"+classNames+" text-red'>" + char + "</span>";
-					} else if (index === greenPos) {
-						return "<span class='"+classNames+" text-green'>" + char + "</span>";
-					} else if (index === bluePos) {
-						return "<span class='"+classNames+" text-blue'>" + char + "</span>";
-					} else {
-						return "<span class='"+classNames+"'>" + char + "</span>";
-					}
-				});
-				headingPosition[i].innerHTML = tagHeadingPosition?tagHeadingPosition.join(''):"";
-			}
-			withinScreenAnimation();
-		}
-		
-		window.addEventListener("scroll", withinScreenAnimation);
+    for (let i = 0; i < headingPosition.length; i++) {
+      if (headingPosition[i] != null && headingPosition[i].textContent != null) {
+        tops[i] = [];
+        lefts[i] = [];
+        const breakHeadingPosition = headingPosition[i].textContent?.split('');
+        const redPos = 0;
+        const greenPos = 3;
+        const bluePos = 5;
+        const classNames = 'absolute';
+        const tagHeadingPosition = breakHeadingPosition?.map((char, index) => {
+          tops[i][index] = Math.random() * 120 - 60;
+          lefts[i][index] = Math.random() * 120 - 60;
+          if (index === redPos) {
+            return "<span class='" + classNames + " text-red'>" + char + '</span>';
+          } else if (index === greenPos) {
+            return "<span class='" + classNames + " text-green'>" + char + '</span>';
+          } else if (index === bluePos) {
+            return "<span class='" + classNames + " text-blue'>" + char + '</span>';
+          } else {
+            return "<span class='" + classNames + "'>" + char + '</span>';
+          }
+        });
+        headingPosition[i].innerHTML = tagHeadingPosition ? tagHeadingPosition.join('') : '';
+      }
+      withinScreenAnimation();
+    }
 
-		// setTimeout(()=>{
-		// 	animation();
-		// }, 750);
-		
-		//let interval = loopFactry(animation);
-	});
+    window.addEventListener('scroll', withinScreenAnimation);
+
+    // setTimeout(()=>{
+    // 	animation();
+    // }, 750);
+
+    //let interval = loopFactry(animation);
+  });
 </script>

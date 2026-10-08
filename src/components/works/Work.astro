@@ -1,55 +1,24 @@
 ---
 import { type Work } from '../../lib/WP';
-import ToggleFilteredImage from '../common/ToggleFilteredImage.astro';
 import { decodeHtmlEscape } from '../../lib/Util';
-import { parentClass } from '../common/ToggleFilteredImage.astro';
+import ToggleFilteredImage, { parentClass } from '../common/ToggleFilteredImage.astro';
 interface Props {
-	work: Work;
-	limited?: boolean;
+  work: Work;
+  limited?: boolean;
 }
-
-
 const { work, limited } = Astro.props;
-const workClass = parentClass
-	+ `
-		[&_h2]:hover:opacity-100
-		[&_h2]:hover:top-1/2
-		mb-28
-		md:mb-0 h-[300px]
-		md:h-full
-		`
-	+ (work.acf.extend_column?"col-span-2 ":"")
-	+ (work.acf.extend_row?"row-span-2":"");
+const workClass = `${parentClass} min-w-0 mb-12 md:mb-0 ${work.acf.extend_column ? 'col-span-2' : ''} ${work.acf.extend_row ? 'row-span-2' : ''}`;
 ---
 
-<div
-	class={workClass}
->
-	<a class="" href={"/" + (limited ? "limited/":"") + "work/" + work.id}>
-		<ToggleFilteredImage
-			imgPath={work.acf.thumbnail.url}
-			alt={work.acf.thumbnail.alt}
-			/>
-		<h2 class="
-			md:-translate-x-1/2
-			md:m-0
-			md:absolute
-			md:top-[calc(50%+1rem)]
-			md:left-1/2
-			md:opacity-0
-			md:duration-200
-			md:text-center
-			w-1/2
-			text-white
-			-translate-y-1/2
-			drop-shadow
-			font-serif
-			ml-10">{decodeHtmlEscape(work.title.rendered)}</h2>
-	</a>
+<div class={workClass}>
+  <a class="flex h-full flex-col text-white" href={`${limited ? '/limited' : ''}/work/${work.id}`}>
+    <div
+      class="relative [&>.toggle_image]:absolute [&>.toggle_image]:inset-0 h-[300px] md:min-h-[200px] md:h-auto md:flex-1 overflow-hidden"
+    >
+      <ToggleFilteredImage imgPath={work.acf.thumbnail.url} alt="" />
+    </div>
+    <h2 class="px-6 md:px-0 py-3 text-base leading-relaxed font-serif">
+      {decodeHtmlEscape(work.title.rendered)}
+    </h2>
+  </a>
 </div>
-
-<style>
-</style>
-
-<script>
-</script>

@@ -1,52 +1,306 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Members from '../../components/aboutus/Members.astro';
-import Scrollate from '../../components/common/Scrollate.astro';
 import ToggleFilteredImage from '../../components/common/ToggleFilteredImage.astro';
-import ToggleText from '../../components/common/ToggleText.astro';
 import { parentClass as imgParentClass } from '../../components/common/ToggleFilteredImage.astro';
-import { parentClass as textParentClass } from '../../components/common/ToggleText.astro';
-import { getPreference } from '../../lib/WP';
+import { decodeHtmlEscape } from '../../lib/Util';
+import { getPreference, getWorks } from '../../lib/WP';
 
-const pref = await getPreference();
+const [pref, works] = await Promise.all([
+  getPreference(),
+  getWorks({ per_page: '100', limited: 'exclude' }),
+]);
 const aboutImage = pref.acf.about_image.sizes.medium_large;
 const alt = pref.acf.about_image.alt;
+const activities = [
+  {
+    label: 'Live',
+    title: 'ライブの企画・演出',
+    description:
+      'ステージプランから映像制作・VJ、当日のテクニカル管理まで。音に反応する映像やバトル用のタイマーなど演出に必要なシステムも開発します。',
+    workId: 771,
+    credit: '主催陣として企画の一部と演出全般を担当',
+  },
+  {
+    label: 'Exhibition / Installation',
+    title: '展示・インスタレーション',
+    description:
+      '楽曲を光や造形で表す展示や天候によって変わる光の作品を制作しています。展示の企画や技術面の設計・設営も手がけています。',
+    workId: 447,
+    credit: '企画・テクニカルディレクション・グラフィックデザイン・技術サポート',
+  },
+  {
+    label: 'Moving image',
+    title: '映像制作',
+    description:
+      'MVやプロモーション映像、モーショングラフィックスを制作します。3DCGや音楽の制作に加えて、音に反応する照明などのインタラクティブなシステムも開発しています。',
+    workId: 837,
+    credit: 'アートディレクション・照明システムの開発と設置',
+  },
+].map((activity) => ({
+  ...activity,
+  work: works.find((work) => work.id === activity.workId && !work.acf.limited),
+}));
 ---
 
 <Layout title="about us" pagename="about us">
-	<main class="w-full md:pl-16">
-		<div class={"mb-52" + imgParentClass + " " + textParentClass}>
-			<ToggleFilteredImage imgPath={aboutImage} alt={alt} reverse/>
-			<div class="absolute bottom-0 right-0 m-10 w-80">
-				<ToggleText text="スミサリアの原風景" english="Primitive landscape of smitharia."/>
-			</div>
-		</div>
-		<div class="info mb-52 text-white font-sans font-bold px-6 md:p-0">
-			<h1 class="text-center mb-10 text-2xl">
-				スミサリアとは
-				<div class="en font-serif text-[0.6rem] -mt-4 text-red">about smitharia</div>
-			</h1>
-			<div class="text-center leading-[3rem] relative">
-				<p>
-					メンバーを固定せず、その時必要な人が集まりモノを作るプラットフォームです。<br/>
-					映像・音楽などのメディアを中心に様々なモノを作りだします。
-				</p>
-				<p class="en font-serif w-full text-[0.6rem] absolute top-[0.7rem] text-blue left-1/2 -translate-x-2/4">
-					It is a platform where people who need something at that time gather and create it, without fixing the members.<br/>
-					We create a variety of products centered on media such as video and music.
-				</p>
-			</div>
-		</div>
-		<Scrollate text='member'/>
-		<div class="mb-52"></div>
-		<Members />
-	</main>
+  <main class="w-full md:pl-16 text-white font-serif">
+    <section class="aboutHero aboutInset" aria-labelledby="aboutTitle">
+      <div class="aboutIntroduction">
+        <h1 id="aboutTitle">演出を仕組みからつくる。</h1>
+        <p>
+          <span>音に反応する光や</span><span>ゲームで操作する映像。</span><br />
+          表現に合わせた仕組みをつくり<br />
+          <span>ライブや展示の企画・演出を</span><span>手がけています。</span>
+        </p>
+      </div>
+      <figure class="aboutLandscape">
+        <div class:list={['landscapeImage', imgParentClass]}>
+          <ToggleFilteredImage imgPath={aboutImage} alt={alt} reverse />
+        </div>
+        <figcaption>
+          <span>スミサリアの原風景</span>
+          <span lang="en">Primitive landscape of smitharia.</span>
+        </figcaption>
+      </figure>
+    </section>
+    <section class="activities aboutInset mb-24" aria-labelledby="activitiesTitle">
+      <h2 id="activitiesTitle" class="sectionLabel">制作・演出</h2>
+      {
+        activities.map(({ label, title, description, work, credit }) => (
+          <article class="activity">
+            <div class="activityText">
+              <h3>
+                {title}
+                <span class="activityLabel" lang="en">
+                  {label}
+                </span>
+              </h3>
+              <p>{description}</p>
+            </div>
+            {work && (
+              <a class:list={['activityWork', imgParentClass]} href={`/work/${work.id}/`}>
+                <div class="activityImage">
+                  <ToggleFilteredImage imgPath={work.acf.thumbnail.url} alt="" />
+                </div>
+                <div class="workCaption">
+                  <span>{decodeHtmlEscape(work.title.rendered)}</span>
+                  <span aria-hidden="true">↗</span>
+                </div>
+                <p class="workCredit">{credit}</p>
+              </a>
+            )}
+          </article>
+        ))
+      }
+      <a class="textLink" href="/works/">all works <span aria-hidden="true">↗</span></a>
+    </section>
+    <section class="platform aboutInset mb-24" aria-labelledby="platformTitle">
+      <h2 id="platformTitle" class="sectionLabel">制作体制</h2>
+      <p>
+        メンバーを固定せず、その時必要な人が集まりモノを作るプラットフォームです。<br />
+        映像・音楽などのメディアを中心に様々なモノを作りだします。
+      </p>
+      <p lang="en" class="en font-serif text-base mt-6 text-[#a8b8ff]">
+        It is a platform where people who need something at that time gather and create it, without
+        fixing the members.<br />
+        We create a variety of products centered on media such as video and music.
+      </p>
+    </section>
+    <section aria-labelledby="membersTitle">
+      <div class="aboutInset mb-16">
+        <h2 id="membersTitle" class="sectionLabel">creators</h2>
+        <p class="leading-relaxed">
+          つくるものに合わせて、その都度チームを組んでいます。<br />
+          ここではこれまで制作に関わってきた人たちの一部を紹介します。
+        </p>
+      </div>
+      <Members />
+    </section>
+    <section
+      id="contact"
+      aria-labelledby="contactHeading"
+      class="mb-24 px-6 md:px-0 text-white font-serif scroll-mt-36"
+    >
+      <h2 id="contactHeading" class="mb-6 text-xl font-serif">contact</h2>
+      <div class="max-w-2xl leading-relaxed">
+        <p>企画や制作のご相談はこちらへ。</p>
+        <a
+          class="inline-block mt-4 py-3 underline underline-offset-4"
+          href="mailto:info@smitharia.com"
+        >
+          info@smitharia.com
+        </a>
+      </div>
+    </section>
+  </main>
 </Layout>
 
 <style>
-	main {
-	}
+  .aboutHero {
+    margin-bottom: 80px;
+  }
+  .aboutIntroduction {
+    margin-bottom: 32px;
+  }
+  .aboutIntroduction h1 {
+    font-size: clamp(24px, 2.4vw, 36px);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .aboutIntroduction p {
+    font-size: 16px;
+    line-height: 1.75;
+    max-width: 38em;
+  }
+  .aboutIntroduction p span {
+    display: inline-block;
+  }
+  .landscapeImage {
+    height: clamp(220px, 25vw, 360px);
+  }
+  .aboutLandscape figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+    margin-top: 12px;
+    color: #b4b4b4;
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .aboutInset {
+    padding-right: clamp(24px, 4vw, 64px);
+  }
+  .sectionLabel {
+    font-size: 16px;
+    margin-bottom: 36px;
+  }
+  .activity {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    align-items: start;
+    gap: clamp(28px, 4vw, 64px);
+    border-top: 1px solid #ffffff30;
+    padding: 40px 0 48px;
+  }
+  .activityLabel {
+    display: block;
+    color: #b4b4b4;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  .activity h3 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .activityText > p:last-child {
+    color: #c4c4c4;
+    font-size: 16px;
+    line-height: 1.75;
+    max-width: 32em;
+  }
+  .activityWork:hover :global(img.normal),
+  .activityWork:focus-visible :global(img.normal) {
+    opacity: 0;
+  }
+  .activityWork {
+    display: block;
+  }
+  .activityImage {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 3 / 2;
+    background: #161616;
+  }
+  .activityImage > :global(.toggle_image) {
+    position: absolute;
+    inset: 0;
+  }
+  .activityImage img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+  .workCaption {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-top: 16px;
+    font-size: 16px;
+    line-height: 1.75;
+  }
+  .workCredit {
+    font-size: 14px;
+    color: #b4b4b4;
+    margin-top: 8px;
+    line-height: 1.75;
+  }
+  .textLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 24px;
+    min-height: 44px;
+    border-bottom: 1px solid #ffffff50;
+  }
+  .platform {
+    border-top: 1px solid #ffffff30;
+    padding-top: 40px;
+    line-height: 1.75;
+  }
+  .activityWork:hover .workCaption,
+  .textLink:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  @media (max-width: 1023px) {
+    .activity {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+  }
+  @media (max-width: 767px) {
+    .aboutHero {
+      margin-bottom: 80px;
+    }
+    .aboutIntroduction {
+      margin-bottom: 32px;
+    }
+    .aboutIntroduction h1 {
+      font-size: clamp(24px, 2.4vw, 36px);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .aboutIntroduction p {
+      font-size: 16px;
+      line-height: 1.75;
+      max-width: 38em;
+    }
+    .landscapeImage {
+      height: clamp(220px, 25vw, 360px);
+    }
+    .aboutLandscape figcaption {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 20px;
+      margin-top: 12px;
+      color: #b4b4b4;
+      font-size: 14px;
+      line-height: 1.75;
+    }
+    .aboutInset {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    .aboutHero {
+      margin-bottom: 56px;
+    }
+    .aboutIntroduction h1 {
+      font-size: 24px;
+    }
+    .activity {
+      padding: 32px 0 40px;
+    }
+  }
 </style>
-
-<script>
-</script>

@@ -13,6 +13,7 @@ const filteredImgPaths = getFilteredImagePaths(imgPath);
 const filteredImgPath = filteredImgPaths[0] ?? imgPath;
 export const parentClass = `
 	[&_img.normal]:hover:opacity-0
+  focus-within:[&_img.normal]:opacity-0
 	relative `;
 ---
 

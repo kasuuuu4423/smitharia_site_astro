@@ -131,7 +131,7 @@ const Works: React.FC<Props> = ({ filterCatId, disableSlider, limited }) => {
     <section className="works">
       {!disableSlider && <Slider works={recommendWorks} limited={limited} />}
       {!disableSlider && <Scrollate text="other projects" />}
-      <div className="others block md:grid grid-flow-dense md:grid-cols-2 lg:grid-cols-3 md:grid-rows-[200px] md:gap-5">
+      <div className="others block md:grid grid-flow-dense md:grid-cols-2 lg:grid-cols-3 md:auto-rows-[minmax(260px,auto)] md:gap-5">
         {works.map((work) => (
           <WorkComponent key={work.id} limited={limited} work={work} />
         ))}

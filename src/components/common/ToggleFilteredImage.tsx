@@ -11,6 +11,7 @@ interface Props {
 
 export const parentClass = `
 	[&_img.normal]:hover:opacity-0
+  focus-within:[&_img.normal]:opacity-0
 	relative `;
 
 const ToggleFilteredImage: React.FC<Props> = ({ imgPath, alt, reverse }) => {

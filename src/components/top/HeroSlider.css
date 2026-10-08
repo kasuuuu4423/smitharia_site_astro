@@ -1,0 +1,101 @@
+.heroSlider,
+.heroSlideshow {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.heroSlideshow {
+  z-index: 0;
+}
+.heroSlideImage,
+.heroSlideImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 58%;
+}
+.heroSlider .swiper-slide {
+  height: 100%;
+}
+.heroSlideCredit {
+  position: absolute;
+  z-index: 3;
+  bottom: 108px;
+  right: 5vw;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  max-width: 65%;
+  color: white;
+  font-size: 12px;
+}
+.heroSlideCredit > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.heroSlideCredit:hover > span:first-child {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.heroSliderControls {
+  position: absolute;
+  z-index: 3;
+  bottom: 48px;
+  right: 5vw;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: white;
+}
+.heroSliderControls button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+.heroSliderControls button:hover {
+  opacity: 0.65;
+}
+.heroSliderDots {
+  display: flex;
+}
+.heroSliderDots button > span {
+  width: 7px;
+  height: 7px;
+  border: 1px solid white;
+  border-radius: 50%;
+}
+.heroSliderDots button[aria-current='true'] > span {
+  background: white;
+}
+@media (max-width: 767px) {
+  .heroSlideImage,
+  .heroSlideImage img {
+    object-position: 52% center;
+  }
+  .heroSlideCredit {
+    left: 5vw;
+    right: auto;
+    bottom: 108px;
+    max-width: 90%;
+  }
+  .heroSliderControls {
+    left: 5vw;
+    right: auto;
+    bottom: 56px;
+    gap: 0;
+  }
+}
+
+.heroSlider:hover .swiper-slide-active img.normal,
+.heroSlider:focus-within .swiper-slide-active img.normal {
+  opacity: 0;
+}

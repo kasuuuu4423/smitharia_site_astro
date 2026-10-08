@@ -1,39 +1,61 @@
 ---
-import type { CatType } from '../../../lib/WP'
-
+import type { CatType } from '../../../lib/WP';
 interface Props {
-    title: string,
-    subcats: CatType[],
-    urlPrefix?: string
+  title: string;
+  subcats: CatType[];
+  urlPrefix?: string;
+  titleUrl?: string;
 }
-const { title, subcats, urlPrefix } = Astro.props;
+const { title, subcats, urlPrefix = '', titleUrl } = Astro.props;
+const panelId = `category-${title.replaceAll(' ', '-')}`;
 ---
 
-<ul class="mb-2 md:mb-1 text-white">
-    <li class="cat-title mb-2 md:mb-1">
-        {title}
-        <span class="md:hidden inline-block tri text-green">&lt;</span>
-    </li>
-    <ul class="category hidden md:block ml-4">
-        {subcats.map(cat=>
-            <li class="mb-2 md:mb-1">
-                <a href={"/"+ urlPrefix +cat.slug}>
-                    {cat.name}
-                </a>
-            </li>
-        )}
-    </ul>
-</ul>
-
+<div class="mb-5 md:mb-3 text-white">
+  <div class="hidden md:block mb-1">
+    {
+      titleUrl ? (
+        <a class="inline-block py-1" href={titleUrl}>
+          {title}
+        </a>
+      ) : (
+        title
+      )
+    }
+  </div>
+  <button
+    type="button"
+    class="jsCategoryToggle md:hidden flex items-center gap-3 min-h-11 text-left"
+    aria-expanded="false"
+    aria-controls={panelId}
+  >
+    {title}<span class="tri text-green" aria-hidden="true">⌄</span>
+  </button>
+  <ul id={panelId} class="category hidden md:block ml-4">
+    {
+      titleUrl && (
+        <li class="md:hidden">
+          <a class="block py-2" href={titleUrl}>
+            all works
+          </a>
+        </li>
+      )
+    }
+    {
+      subcats.map((cat) => (
+        <li>
+          <a class="block py-2 md:py-1" href={'/' + urlPrefix + cat.slug}>
+            {cat.name}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
 <style>
-    .tri{
-        transform: scaleX(1.3) rotate(90deg);
-        transition: .2s;
-    }
-    .tri.active{
-        transform: scaleX(1.3) rotate(-90deg);
-    }
+  .tri {
+    transition: transform 0.2s;
+  }
+  button[aria-expanded='true'] .tri {
+    transform: rotate(180deg);
+  }
 </style>
-
-<script>
-</script>

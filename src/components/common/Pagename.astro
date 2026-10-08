@@ -1,39 +1,20 @@
 ---
 interface Props {
-	name: string;
+  name: string;
 }
-
 const { name } = Astro.props;
-// translate-x-2/4 translate-y-full rotate-90
 ---
 
-<div class="pagename fixed z-10 mt-[190px] md:mt-[80px] mr-0 md:mr-20 top-0 right-0">
-    <div class="textbox tracking-widest text-6xl font-black text-white">
-        {name}
-    </div>
+<div
+  class="pagename px-6 mb-8 md:p-0 md:mb-0 md:fixed md:z-10 md:mt-20 md:mr-20 md:top-0 md:right-0 md:pointer-events-none"
+>
+  <div class="textbox tracking-widest text-4xl font-black text-white">{name}</div>
 </div>
-
 <style>
-    .pagename .textbox{
-        writing-mode:  vertical-rl;
+  @media (min-width: 768px) {
+    .textbox {
+      writing-mode: vertical-rl;
+      font-size: clamp(48px, min(12vw, 10vh), 96px);
     }
-    @media screen and (min-width: 768px){
-        .pagename .textbox{
-            font-size: clamp(48px, calc(100vw / 8), 96px);
-        }
-    }
+  }
 </style>
-
-<script>
-    window.addEventListener('load', ()=>{
-    //fontSize: `clamp(48px, ${100 / str.length}vw, 96px)`
-        const textbox = document.querySelector('.textbox') as HTMLElement;
-        if(!textbox) return console.error('textbox not found');
-        const str = textbox.textContent;
-        const windowHeight = window.innerHeight;
-        if(str && windowHeight < 96 * str.length){
-            const fontSize = windowHeight / str.length * 1.5;
-            textbox.style.fontSize = fontSize + "px";
-        }
-    });
-</script>

@@ -5,50 +5,24 @@ import { type Work } from '../../lib/WP';
 import ToggleFilteredImage, { parentClass } from '../common/ToggleFilteredImage';
 
 interface Props {
-    work: Work;
-    limited?: boolean;
+  work: Work;
+  limited?: boolean;
 }
-
 const WorkComponent: React.FC<Props> = ({ work, limited }) => {
-    const workClass = parentClass
-        + `
-			[&_h2]:hover:opacity-100
-			[&_h2]:hover:top-1/2
-			mb-28
-			md:mb-0 h-[300px]
-			md:h-full
-			`
-        + (work.acf.extend_column ? "col-span-2 " : "")
-        + (work.acf.extend_row ? "row-span-2" : "");
-
-    return (
-        <div className={workClass}>
-            <a className="" href={"/" + (limited ? "limited/" : "") + "work/" + work.id}>
-                <ToggleFilteredImage
-                    imgPath={work.acf.thumbnail.url}
-                    alt={work.acf.thumbnail.alt}
-                />
-                <h2 className="
-					md:-translate-x-1/2
-					md:m-0
-					md:absolute
-					md:top-[calc(50%+1rem)]
-					md:left-1/2
-					md:opacity-0
-					md:duration-200
-					md:text-center
-					w-1/2
-					text-white
-					-translate-y-1/2
-					drop-shadow
-					font-serif
-					ml-10"
-                >
-                    {decodeHtmlEscape(work.title.rendered)}
-                </h2>
-            </a>
+  const title = decodeHtmlEscape(work.title.rendered);
+  const workClass = `${parentClass} min-w-0 mb-12 md:mb-0 ${work.acf.extend_column ? 'col-span-2' : ''} ${work.acf.extend_row ? 'row-span-2' : ''}`;
+  return (
+    <div className={workClass}>
+      <a
+        className="flex h-full flex-col text-white"
+        href={`${limited ? '/limited' : ''}/work/${work.id}`}
+      >
+        <div className="relative [&>.toggle_image]:absolute [&>.toggle_image]:inset-0 h-[300px] md:min-h-[200px] md:h-auto md:flex-1 overflow-hidden">
+          <ToggleFilteredImage imgPath={work.acf.thumbnail.url} alt="" />
         </div>
-    );
+        <h2 className="px-6 md:px-0 py-3 text-base leading-relaxed font-serif">{title}</h2>
+      </a>
+    </div>
+  );
 };
-
-export default WorkComponent; 
+export default WorkComponent;
