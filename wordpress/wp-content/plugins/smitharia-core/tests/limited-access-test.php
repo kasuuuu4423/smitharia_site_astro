@@ -100,6 +100,22 @@ $admin_html = ob_get_clean();
 expect(preg_match('/id="id-new"[^>]*readonly/', $admin_html) === 0, 'new share ID remains editable in admin form');
 expect(preg_match('/id="id-client-one"[^>]*readonly="readonly"/', $admin_html) === 1, 'existing share ID is readonly in admin form');
 expect(str_contains($admin_html, '共有先を追加') && str_contains($admin_html, '変更を保存'), 'admin renders both create and edit forms');
+expect(str_contains($admin_html, 'minlength="8"') && str_contains($admin_html, 'pattern="[!-~]{8,128}"'), 'admin form specifies the 8 to 128 character rule');
+foreach (array('1234567', str_repeat('x', 129), 'Ab3 xyZ9', '日本語のパスワード') as $invalid_password) {
+    $_POST = array('_wpnonce' => 'nonce', 'share_id' => 'boundary-check', 'label' => 'Boundary', 'password' => $invalid_password, 'enabled' => '1', 'creating' => '1');
+    try {
+        Smitharia_Limited_Access::save_share();
+        throw new RuntimeException('Invalid password unexpectedly saved');
+    } catch (RuntimeException $error) {
+        expect($error->getCode() === 400 && !isset($options['smitharia_limited_shares']['boundary-check']), 'invalid password rejected without saving: ' . strlen($invalid_password) . ' bytes');
+    }
+}
+foreach (array('Ab3!xyZ9', str_repeat('x', 128)) as $valid_password) {
+    $_POST = array('_wpnonce' => 'nonce', 'share_id' => 'boundary-check', 'label' => 'Boundary', 'password' => $valid_password, 'enabled' => '1', 'creating' => '1');
+    try { Smitharia_Limited_Access::save_share(); } catch (RuntimeException $error) { expect($error->getCode() === 302, 'valid password saved: ' . strlen($valid_password) . ' characters'); }
+    expect(Smitharia_Limited_Access::verify_viewer(viewer_request($valid_password, 'boundary-check')) === true, 'saved password authenticates: ' . strlen($valid_password) . ' characters');
+    unset($options['smitharia_limited_shares']['boundary-check']);
+}
 $_POST = array('_wpnonce' => 'nonce', 'share_id' => 'client-two', 'label' => 'Second client', 'password' => 'another-random-password', 'enabled' => '1', 'creating' => '1');
 try { Smitharia_Limited_Access::save_share(); } catch (RuntimeException $error) { expect($error->getCode() === 302, 'new share saved'); }
 expect($options['smitharia_limited_shares']['client-two']['password_hash'] !== $_POST['password'], 'plaintext password is not stored');

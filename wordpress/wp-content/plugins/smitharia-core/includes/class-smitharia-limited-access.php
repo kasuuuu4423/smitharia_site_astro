@@ -110,7 +110,7 @@ final class Smitharia_Limited_Access
             return new WP_Error('viewer_unauthorized', 'Invalid credentials.', array('status' => 401));
         }
         $decoded = base64_decode($match[1], true);
-        if (!is_string($decoded) || !preg_match('/^([A-Za-z0-9_-]{3,64}):([\x21-\x7e]{16,128})$/D', $decoded, $credentials)) {
+        if (!is_string($decoded) || !preg_match('/^([A-Za-z0-9_-]{3,64}):([\x21-\x7e]{8,128})$/D', $decoded, $credentials)) {
             return new WP_Error('viewer_unauthorized', 'Invalid credentials.', array('status' => 401));
         }
         $share_id = $credentials[1];
@@ -172,8 +172,8 @@ final class Smitharia_Limited_Access
         if (($creating && $existing !== null) || (!$creating && $existing === null)) {
             wp_die('このIDは登録済み、または編集対象が存在しません。共有先一覧から操作し直してください。', '', array('response' => 400));
         }
-        if (($password !== '' && !preg_match('/^[\x21-\x7e]{16,128}$/D', $password)) || ($existing === null && $password === '')) {
-            wp_die('パスワードは空白を含まない半角英数字・記号の16〜128文字で入力してください。', '', array('response' => 400));
+        if (($password !== '' && !preg_match('/^[\x21-\x7e]{8,128}$/D', $password)) || ($existing === null && $password === '')) {
+            wp_die('パスワードは空白を含まない半角英数字・記号の8〜128文字で入力してください。', '', array('response' => 400));
         }
         if ($creating && count($shares) >= 200) {
             wp_die('共有先は200件まで登録できます。', '', array('response' => 400));
@@ -231,7 +231,7 @@ final class Smitharia_Limited_Access
             <table class="form-table" role="presentation">
                 <tr><th><label for="label-<?php echo esc_attr($suffix); ?>">共有先名</label></th><td><input class="regular-text" id="label-<?php echo esc_attr($suffix); ?>" name="label" value="<?php echo esc_attr($share['label']); ?>" required maxlength="80"></td></tr>
                 <tr><th><label for="id-<?php echo esc_attr($suffix); ?>">閲覧用ID</label></th><td><input class="regular-text" id="id-<?php echo esc_attr($suffix); ?>" name="share_id" value="<?php echo esc_attr($share_id); ?>" pattern="[A-Za-z0-9_-]{3,64}" minlength="3" maxlength="64" autocomplete="off" required <?php wp_readonly(!$creating); ?>><p class="description">半角英数字・ハイフン・アンダースコア。登録後は変更できません。</p></td></tr>
-                <tr><th><label for="password-<?php echo esc_attr($suffix); ?>">パスワード</label></th><td><input class="regular-text" type="password" id="password-<?php echo esc_attr($suffix); ?>" name="password" minlength="16" maxlength="128" pattern="[!-~]{16,128}" autocomplete="new-password" <?php echo $creating ? 'required' : ''; ?>><p class="description">空白を含まない半角16〜128文字。<?php echo $creating ? 'パスワード管理アプリなどで生成し、共有先へ渡す内容を保存前に控えてください。' : '変更するときだけ入力してください。空欄なら現在のパスワードを維持します。'; ?></p></td></tr>
+                <tr><th><label for="password-<?php echo esc_attr($suffix); ?>">パスワード</label></th><td><input class="regular-text" type="password" id="password-<?php echo esc_attr($suffix); ?>" name="password" minlength="8" maxlength="128" pattern="[!-~]{8,128}" autocomplete="new-password" <?php echo $creating ? 'required' : ''; ?>><p class="description">空白を含まない半角8〜128文字。<?php echo $creating ? 'パスワード管理アプリなどで生成し、共有先へ渡す内容を保存前に控えてください。' : '変更するときだけ入力してください。空欄なら現在のパスワードを維持します。'; ?></p></td></tr>
                 <tr><th>アクセス</th><td><label><input type="checkbox" name="enabled" value="1" <?php checked(!empty($share['enabled'])); ?>>有効にする</label></td></tr>
             </table>
             <?php submit_button($creating ? '共有先を追加' : '変更を保存'); ?>

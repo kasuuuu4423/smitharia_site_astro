@@ -201,6 +201,26 @@ test('POST and invalid queries cannot reach WP', async () => {
   assert.equal(invalid.statusCode, 400);
 });
 
+test('password accepts 8 to 128 printable ASCII characters and rejects invalid boundaries', () => {
+  for (const password of ['Ab3!xyZ9', 'x'.repeat(128)]) {
+    assert.ok(
+      parseBasicCredentials(`Basic ${Buffer.from(`client-one:${password}`).toString('base64')}`)
+    );
+  }
+  for (const password of [
+    'x'.repeat(7),
+    'x'.repeat(129),
+    'Ab3 xyZ9',
+    '日本語のパスワード',
+    'Ab3!xyZ\n',
+  ]) {
+    assert.equal(
+      parseBasicCredentials(`Basic ${Buffer.from(`client-one:${password}`).toString('base64')}`),
+      null
+    );
+  }
+});
+
 test('password can include colon; usernames cannot contain colon or Unicode', () => {
   assert.ok(
     parseBasicCredentials(

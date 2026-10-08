@@ -8,7 +8,7 @@ export function parseBasicCredentials(authorization) {
   const match = /^Basic ([A-Za-z0-9+/]+={0,2})$/i.exec(authorization);
   if (!match) return null;
   const decoded = Buffer.from(match[1], 'base64').toString('utf8');
-  if (!/^[A-Za-z0-9_-]{3,64}:[\x21-\x7e]{16,128}$/.test(decoded)) return null;
+  if (!/^[A-Za-z0-9_-]{3,64}:[\x21-\x7e]{8,128}$/.test(decoded)) return null;
   return authorization;
 }
 
