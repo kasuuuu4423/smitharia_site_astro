@@ -1,7 +1,8 @@
 import React from 'react';
+
+import { decodeHtmlEscape } from '../../lib/Util';
 import { type Work } from '../../lib/WP';
 import ToggleFilteredImage, { parentClass } from '../common/ToggleFilteredImage';
-import { decodeHtmlEscape } from '../../lib/Util';
 
 interface Props {
     work: Work;
