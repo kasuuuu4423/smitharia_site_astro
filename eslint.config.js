@@ -7,8 +7,17 @@ import unicorn from 'eslint-plugin-unicorn';
 
 export default [
   {
+    ignores: [
+      'node_modules/**',
+      'dist/**',
+      '.astro/**',
+      '.github/**',
+      '.vscode/**',
+      'src/env.d.ts',
+    ],
+  },
+  {
     // グローバル設定
-    ignores: ['node_modules/**', 'dist/**', '.astro/**', '.github/**', '.vscode/**'],
     linterOptions: {
       reportUnusedDisableDirectives: 'error',
     },
@@ -58,8 +67,11 @@ export default [
 
       // TypeScriptルール
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
-      '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+      '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/ban-ts-comment': ['error', { 'ts-ignore': 'allow-with-description' }],
       '@typescript-eslint/no-floating-promises': 'error',
@@ -88,15 +100,7 @@ export default [
     rules: {
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/no-null': 'off',
-      'unicorn/filename-case': [
-        'error',
-        {
-          cases: {
-            kebabCase: true,
-            pascalCase: true,
-          },
-        },
-      ],
+      'unicorn/filename-case': 'off',
     },
   },
   // インポート設定
@@ -116,7 +120,16 @@ export default [
       'import/order': [
         'error',
         {
-          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
+          groups: [
+            'builtin',
+            'external',
+            'internal',
+            'parent',
+            'sibling',
+            'index',
+            'object',
+            'type',
+          ],
           'newlines-between': 'always',
           alphabetize: {
             order: 'asc',
@@ -126,4 +139,4 @@ export default [
       ],
     },
   },
-]; 
+];

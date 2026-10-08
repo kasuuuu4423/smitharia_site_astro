@@ -9,16 +9,20 @@ smithariaは、メンバーを固定せず、その時必要な人が集まり�
 ## 技術スタック
 
 ### フロントエンド
+
 - **Astro 4.2** - 静的サイトジェネレーター
 - **React 18** - インタラクティブコンポーネント
 - **TypeScript** - 型安全性の確保
 - **Tailwind CSS** - スタイリング
 
 ### バックエンド・CMS
+
 - **WordPress** - コンテンツ管理システム（REST API）
 - データソース: `https://smitharia.shimizuyasushi.com`
+- Smitharia固有処理: `wordpress/wp-content/plugins/smitharia-core`
 
 ### デプロイメント・ツール
+
 - **Firebase Hosting** - ホスティング
 - **ESLint** - コード品質チェック
 - **Prettier** - コードフォーマット
@@ -42,32 +46,38 @@ src/
 ## 主要機能
 
 ### 1. 作品ポートフォリオ表示
+
 - WordPressから作品データを取得
 - カテゴリ別フィルタリング機能
 - おすすめ作品のスライダー表示
 - レスポンシブデザイン
 
 ### 2. 限定公開機能
+
 - パブリック版（`/`）と限定版（`/limited/`）の二つのバージョン
 - 限定作品の表示切り替え
 - SEO設定（限定版は`noindex`）
 
 ### 3. カテゴリシステム
+
 - works（作品）
 - studies（研究）
 - artists（メンバータグ）
 
 ### 4. メンバー管理
+
 - WordPressでメンバー情報を管理
 - プロフィール画像とバイオグラフィー表示
 
 ## セットアップ
 
 ### 必要な環境
+
 - Node.js 18以上
 - npm または yarn
 
 ### インストール
+
 ```bash
 # リポジトリをクローン
 git clone [repository-url]
@@ -78,6 +88,7 @@ npm install
 ```
 
 ### 開発環境の起動
+
 ```bash
 # 開発サーバーを起動（ホスト0.0.0.0で起動）
 npm run dev
@@ -89,6 +100,7 @@ npm start
 開発サーバーは `http://localhost:4321` で起動します。
 
 ### ビルド
+
 ```bash
 # プロダクション用ビルド
 npm run build
@@ -100,6 +112,7 @@ npm run preview
 ## デプロイメント
 
 ### Firebase Hosting
+
 ```bash
 # ビルド実行
 npm run build
@@ -109,12 +122,25 @@ firebase deploy
 ```
 
 **設定ファイル:**
+
 - `.firebaserc` - プロジェクト設定
 - `firebase.json` - ホスティング設定
+
+### WordPressプラグイン
+
+特殊処理は `smitharia-core` プラグインで管理します。
+
+```bash
+./scripts/deploy-wordpress.sh
+```
+
+ホスト固有の接続先とWordPressパスを環境変数で渡すと、プラグイン転送とPHP構文検査を実行します。
+接続情報、画像、`wp-content/uploads`、認証情報はGitへ保存しません。
 
 ## コード品質
 
 ### リンティングとフォーマット
+
 ```bash
 # ESLintチェック
 npm run lint:precommit
@@ -124,12 +150,14 @@ npm run fmt:precommit
 ```
 
 ### Git Hooks
+
 - pre-commit時に自動でlintとフォーマットチェックが実行されます
 - `husky`と`lint-staged`により管理
 
 ## 設定ファイル
 
 ### Astro設定 (`astro.config.mjs`)
+
 - React integration
 - Tailwind CSS integration
 - Sitemap生成
@@ -137,20 +165,25 @@ npm run fmt:precommit
 - 画像ドメイン設定
 
 ### Tailwind設定 (`tailwind.config.mjs`)
+
 - カスタムフォント（big-caslon-fb, 游ゴシック）
 - ブランドカラー（red, green, blue）
 
 ## API連携
 
 ### WordPress REST API
+
 WordPressのREST APIエンドポイント:
+
 - 作品: `/wp-json/wp/v2/works`
 - カテゴリ: `/wp-json/wp/v2/categories`
 - メンバー: `/wp-json/wp/v2/members`
 - 設定: `/wp-json/wp/v2/preferences`
 
 ### データ型定義
+
 主要なインターフェース:
+
 - `Work` - 作品データ
 - `CatType` - カテゴリデータ
 - `MemberType` - メンバーデータ
@@ -158,12 +191,14 @@ WordPressのREST APIエンドポイント:
 ## ページ構成
 
 ### パブリック版
+
 - `/` - トップページ（作品一覧）
 - `/[catSlug]` - カテゴリ別作品一覧
 - `/work/[id]` - 作品詳細
 - `/aboutus` - 会社概要・メンバー紹介
 
 ### 限定版
+
 - `/limited/` - 限定版トップページ
 - `/limited/[catSlug]` - 限定版カテゴリ別一覧
 - `/limited/work/[id]` - 限定版作品詳細
@@ -176,8 +211,8 @@ MIT License - 詳細は `LICENSE` ファイルを参照してください。
 ## コンタクト
 
 - Website: https://smitharia.com
-- Twitter: [@__smitharia](https://twitter.com/__smitharia)
-- Instagram: [@__smitharia](https://www.instagram.com/__smitharia)
+- Twitter: [@\_\_smitharia](https://twitter.com/__smitharia)
+- Instagram: [@\_\_smitharia](https://www.instagram.com/__smitharia)
 - Email: info@smitharia.com
 
 ---
