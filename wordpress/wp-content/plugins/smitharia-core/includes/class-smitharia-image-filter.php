@@ -5,11 +5,20 @@ defined('ABSPATH') || exit;
 final class Smitharia_Image_Filter
 {
     private const META_KEY = '_smitharia_filtered_path';
+    private const STATUS_META_KEY = '_smitharia_filtered_status';
+    private const ATTEMPTS_META_KEY = '_smitharia_filtered_attempts';
+    private const ERROR_META_KEY = '_smitharia_filtered_error';
+    private const GENERATED_AT_META_KEY = '_smitharia_filtered_generated_at';
+    private const LOCK_META_KEY = '_smitharia_filtered_lock';
+    private const CRON_HOOK = 'smitharia_generate_filtered_image';
+    private const MAX_ATTEMPTS = 3;
+    private const LOCK_TIMEOUT = 900;
     private const BATCH_SIZE = 5;
 
     public static function init(): void
     {
-        add_filter('wp_generate_attachment_metadata', array(__CLASS__, 'generate_after_upload'), 20, 2);
+        add_filter('wp_generate_attachment_metadata', array(__CLASS__, 'queue_after_upload'), 20, 2);
+        add_action(self::CRON_HOOK, array(__CLASS__, 'process_queued_attachment'), 10, 1);
         add_action('admin_menu', array(__CLASS__, 'register_tools_page'));
         add_action('admin_enqueue_scripts', array(__CLASS__, 'enqueue_admin_assets'));
         add_action('wp_ajax_smitharia_regenerate_images', array(__CLASS__, 'ajax_regenerate_images'));
@@ -24,14 +33,88 @@ final class Smitharia_Image_Filter
         }
     }
 
-    public static function generate_after_upload(array $metadata, int $attachment_id): array
+    public static function queue_after_upload(array $metadata, int $attachment_id): array
     {
-        $result = self::generate_for_attachment($attachment_id);
-        if (is_wp_error($result)) {
-            error_log('Smitharia filtered image: ' . $result->get_error_message());
-        }
+        self::queue_attachment($attachment_id);
 
         return $metadata;
+    }
+
+    /**
+     * Queue one attachment without making the upload request wait for Imagick.
+     */
+    public static function queue_attachment(int $attachment_id, int $delay = 5, bool $reset_attempts = true): bool
+    {
+        if (!self::is_supported_attachment($attachment_id)) {
+            return false;
+        }
+
+        $args = array($attachment_id);
+        if (wp_next_scheduled(self::CRON_HOOK, $args) !== false) {
+            return true;
+        }
+
+        if ($reset_attempts) {
+            delete_post_meta($attachment_id, self::ATTEMPTS_META_KEY);
+            delete_post_meta($attachment_id, self::ERROR_META_KEY);
+        }
+
+        update_post_meta($attachment_id, self::STATUS_META_KEY, 'queued');
+        $scheduled = wp_schedule_single_event(
+            time() + max(1, $delay),
+            self::CRON_HOOK,
+            $args,
+            true
+        );
+
+        if (is_wp_error($scheduled) || !$scheduled) {
+            $message = is_wp_error($scheduled)
+                ? $scheduled->get_error_message()
+                : 'WordPress could not schedule the image job.';
+            update_post_meta($attachment_id, self::STATUS_META_KEY, 'failed');
+            update_post_meta($attachment_id, self::ERROR_META_KEY, $message);
+            error_log('Smitharia filtered image queue: ' . $message);
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function process_queued_attachment(int $attachment_id): void
+    {
+        if (!self::is_supported_attachment($attachment_id)) {
+            return;
+        }
+
+        if (!self::acquire_lock($attachment_id)) {
+            self::schedule_retry($attachment_id, 60);
+            return;
+        }
+
+        $attempts = (int) get_post_meta($attachment_id, self::ATTEMPTS_META_KEY, true) + 1;
+        update_post_meta($attachment_id, self::ATTEMPTS_META_KEY, $attempts);
+        update_post_meta($attachment_id, self::STATUS_META_KEY, 'processing');
+
+        // If PHP terminates unexpectedly, this event recovers the stale lock later.
+        wp_schedule_single_event(
+            time() + self::LOCK_TIMEOUT + 60,
+            self::CRON_HOOK,
+            array($attachment_id)
+        );
+
+        $result = self::generate_for_attachment($attachment_id);
+
+        self::release_lock($attachment_id);
+        wp_clear_scheduled_hook(self::CRON_HOOK, array($attachment_id));
+
+        if (!is_wp_error($result)) {
+            return;
+        }
+
+        error_log('Smitharia filtered image: ' . $result->get_error_message());
+        if ($attempts < self::MAX_ATTEMPTS) {
+            self::schedule_retry($attachment_id, 60 * (2 ** ($attempts - 1)));
+        }
     }
 
     /**
@@ -39,29 +122,31 @@ final class Smitharia_Image_Filter
      */
     public static function generate_for_attachment(int $attachment_id)
     {
+        update_post_meta($attachment_id, self::STATUS_META_KEY, 'processing');
+
         if (!extension_loaded('imagick')) {
-            return new WP_Error('smitharia_no_imagick', 'Imagick extension is not available.');
+            return self::record_failure($attachment_id, new WP_Error('smitharia_no_imagick', 'Imagick extension is not available.'));
         }
 
         $source = get_attached_file($attachment_id);
         if (!$source || !is_readable($source)) {
-            return new WP_Error('smitharia_missing_source', 'Source image is not readable.');
+            return self::record_failure($attachment_id, new WP_Error('smitharia_missing_source', 'Source image is not readable.'));
         }
 
         $mime = get_post_mime_type($attachment_id);
         if (!in_array($mime, array('image/jpeg', 'image/png'), true)) {
-            return new WP_Error('smitharia_unsupported_type', 'Only JPEG and PNG files are supported.');
+            return self::record_failure($attachment_id, new WP_Error('smitharia_unsupported_type', 'Only JPEG and PNG files are supported.'));
         }
 
         $uploads = wp_upload_dir();
         if (!empty($uploads['error'])) {
-            return new WP_Error('smitharia_upload_error', $uploads['error']);
+            return self::record_failure($attachment_id, new WP_Error('smitharia_upload_error', $uploads['error']));
         }
 
         $source_normalized = wp_normalize_path($source);
         $base_normalized = trailingslashit(wp_normalize_path($uploads['basedir']));
         if (strpos($source_normalized, $base_normalized) !== 0) {
-            return new WP_Error('smitharia_invalid_source', 'Source image is outside the uploads directory.');
+            return self::record_failure($attachment_id, new WP_Error('smitharia_invalid_source', 'Source image is outside the uploads directory.'));
         }
 
         $relative_source = ltrim(substr($source_normalized, strlen($base_normalized)), '/');
@@ -74,7 +159,7 @@ final class Smitharia_Image_Filter
         $destination = trailingslashit($uploads['basedir']) . $relative_output;
 
         if (!wp_mkdir_p(dirname($destination))) {
-            return new WP_Error('smitharia_create_directory', 'Could not create the filtered image directory.');
+            return self::record_failure($attachment_id, new WP_Error('smitharia_create_directory', 'Could not create the filtered image directory.'));
         }
 
         try {
@@ -107,12 +192,77 @@ final class Smitharia_Image_Filter
             $image->clear();
             $image->destroy();
         } catch (Throwable $exception) {
-            return new WP_Error('smitharia_imagick_error', $exception->getMessage());
+            return self::record_failure($attachment_id, new WP_Error('smitharia_imagick_error', $exception->getMessage()));
         }
 
         update_post_meta($attachment_id, self::META_KEY, $relative_output);
+        update_post_meta($attachment_id, self::STATUS_META_KEY, 'complete');
+        update_post_meta($attachment_id, self::GENERATED_AT_META_KEY, time());
+        delete_post_meta($attachment_id, self::ERROR_META_KEY);
 
         return $relative_output;
+    }
+
+    private static function is_supported_attachment(int $attachment_id): bool
+    {
+        if (get_post_type($attachment_id) !== 'attachment') {
+            return false;
+        }
+
+        return in_array(
+            get_post_mime_type($attachment_id),
+            array('image/jpeg', 'image/png'),
+            true
+        );
+    }
+
+    private static function record_failure(int $attachment_id, WP_Error $error): WP_Error
+    {
+        update_post_meta($attachment_id, self::STATUS_META_KEY, 'failed');
+        update_post_meta($attachment_id, self::ERROR_META_KEY, $error->get_error_message());
+        return $error;
+    }
+
+    private static function schedule_retry(int $attachment_id, int $delay): void
+    {
+        update_post_meta($attachment_id, self::STATUS_META_KEY, 'queued');
+        $args = array($attachment_id);
+        if (wp_next_scheduled(self::CRON_HOOK, $args) !== false) {
+            return;
+        }
+
+        $scheduled = wp_schedule_single_event(
+            time() + max(1, $delay),
+            self::CRON_HOOK,
+            $args,
+            true
+        );
+        if (is_wp_error($scheduled) || !$scheduled) {
+            $message = is_wp_error($scheduled)
+                ? $scheduled->get_error_message()
+                : 'WordPress could not schedule an image retry.';
+            update_post_meta($attachment_id, self::STATUS_META_KEY, 'failed');
+            update_post_meta($attachment_id, self::ERROR_META_KEY, $message);
+        }
+    }
+
+    private static function acquire_lock(int $attachment_id): bool
+    {
+        $locked_at = (int) get_post_meta($attachment_id, self::LOCK_META_KEY, true);
+        if ($locked_at && $locked_at > (time() - self::LOCK_TIMEOUT)) {
+            return false;
+        }
+
+        if ($locked_at) {
+            delete_post_meta($attachment_id, self::LOCK_META_KEY);
+        }
+
+        return add_post_meta($attachment_id, self::LOCK_META_KEY, time(), true) !== false;
+    }
+
+    private static function release_lock(int $attachment_id): void
+    {
+        delete_post_meta($attachment_id, self::LOCK_META_KEY);
     }
 
     public static function register_tools_page(): void
@@ -150,14 +300,55 @@ final class Smitharia_Image_Filter
         if (!current_user_can('manage_options')) {
             return;
         }
+        $counts = self::get_status_counts();
         ?>
         <div class="wrap">
             <h1>Smitharia filtered images</h1>
-            <p>JPEG・PNGの元画像からfiltered画像を5件ずつ安全に再生成します。</p>
+            <p>新規画像は保存後にバックグラウンド処理されます。通常は再生成ボタンを押す必要はありません。</p>
+            <p>
+                自動処理：待機中 <?php echo esc_html((string) $counts['queued']); ?>件 ／
+                実行中 <?php echo esc_html((string) $counts['processing']); ?>件 ／
+                完了 <?php echo esc_html((string) $counts['complete']); ?>件 ／
+                失敗 <?php echo esc_html((string) $counts['failed']); ?>件
+            </p>
+            <p>問題がある場合のみ、JPEG・PNGの元画像からfiltered画像を5件ずつ再生成します。</p>
             <button type="button" class="button button-primary" id="smitharia-regenerate">再生成を開始</button>
             <p id="smitharia-regenerate-status" aria-live="polite"></p>
         </div>
         <?php
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    private static function get_status_counts(): array
+    {
+        $counts = array(
+            'queued' => 0,
+            'processing' => 0,
+            'complete' => 0,
+            'failed' => 0,
+        );
+        $attachment_ids = get_posts(array(
+            'post_type' => 'attachment',
+            'post_status' => 'inherit',
+            'post_mime_type' => array('image/jpeg', 'image/png'),
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'no_found_rows' => true,
+        ));
+
+        foreach ($attachment_ids as $attachment_id) {
+            $status = get_post_meta((int) $attachment_id, self::STATUS_META_KEY, true);
+            if (!$status && get_post_meta((int) $attachment_id, self::META_KEY, true)) {
+                $status = 'complete';
+            }
+            if (isset($counts[$status])) {
+                $counts[$status]++;
+            }
+        }
+
+        return $counts;
     }
 
     public static function ajax_regenerate_images(): void

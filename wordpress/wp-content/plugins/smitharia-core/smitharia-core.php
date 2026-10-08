@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Smitharia Core
  * Description: Smitharia 固有の画像生成、REST API、GitHub Actions 通知をまとめます。
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: smitharia
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-define('SMITHARIA_CORE_VERSION', '1.0.0');
+define('SMITHARIA_CORE_VERSION', '1.1.0');
 define('SMITHARIA_CORE_DIR', plugin_dir_path(__FILE__));
 define('SMITHARIA_CORE_URL', plugin_dir_url(__FILE__));
 

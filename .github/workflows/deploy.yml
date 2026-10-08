@@ -3,6 +3,8 @@ name: Build and deploy
 on:
   push:
     branches: [master]
+    paths-ignore:
+      - "wordpress/**"
   repository_dispatch:
     types: [after_saving_wordpress]
   workflow_dispatch:
