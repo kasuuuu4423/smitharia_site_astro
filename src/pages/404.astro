@@ -1,0 +1,155 @@
+---
+import logoImage from '../assets/images/smitharia_logo.svg';
+import noiseImage from '../assets/images/noise.jpg';
+import '@fontsource/libre-caslon-text';
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#13151a" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>ページが見つかりません | smitharia</title>
+  </head>
+  <body style={`--noise-image: url("${noiseImage.src}")`}>
+    <header>
+      <a class="logoLink" href="/" aria-label="smitharia トップページ">
+        <img src={logoImage.src} alt="smitharia" width="180" height="40" />
+      </a>
+    </header>
+    <main>
+      <p class="errorCode">404</p>
+      <p class="errorLabel" lang="en">Page not found</p>
+      <h1>ページが見つかりません</h1>
+      <p class="message">お探しのページは、移動または削除された可能性があります。</p>
+      <a class="homeLink" href="/">
+        トップページへ戻る <span aria-hidden="true">↗</span>
+      </a>
+    </main>
+    <footer>©smitharia.com</footer>
+  </body>
+</html>
+
+<style>
+  :global(html) {
+    background: #13151a;
+    color: #fff;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    background-image: var(--noise-image);
+    background-size: cover;
+    font-family: '游ゴシック体', 'Yu Gothic', sans-serif;
+  }
+
+  header {
+    padding: 4rem 5vw 0;
+  }
+
+  .logoLink {
+    display: inline-block;
+  }
+
+  .logoLink img {
+    display: block;
+    width: 180px;
+    height: auto;
+  }
+
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 64rem;
+    margin-inline: auto;
+    padding: 4rem 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .errorCode {
+    margin: 0;
+    font-family: 'Libre Caslon Text', serif;
+    font-size: clamp(7rem, 23vw, 18rem);
+    line-height: 1;
+    letter-spacing: -0.06em;
+  }
+
+  .errorLabel {
+    margin: 1.25rem 0 3rem;
+    font-family: 'Libre Caslon Text', serif;
+    font-size: 1rem;
+    letter-spacing: 0.14em;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(1.125rem, 3vw, 1.5rem);
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  .message {
+    max-width: 30rem;
+    margin: 1rem 0 2rem;
+    color: #ccc;
+    font-size: 0.875rem;
+    line-height: 2;
+  }
+
+  .homeLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5rem;
+    min-height: 48px;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid currentColor;
+    color: #fff;
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+
+  .homeLink:hover {
+    color: #ccc;
+  }
+
+  a:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 6px;
+  }
+
+  footer {
+    padding: 0 5vw 2rem;
+    font-family: 'Libre Caslon Text', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-align: right;
+  }
+
+  @media (max-width: 767px) {
+    header {
+      padding-top: 2.5rem;
+    }
+
+    .logoLink img {
+      width: 140px;
+    }
+
+    main {
+      padding-block: 3rem;
+    }
+
+    .errorLabel {
+      margin-bottom: 2.5rem;
+    }
+  }
+</style>
