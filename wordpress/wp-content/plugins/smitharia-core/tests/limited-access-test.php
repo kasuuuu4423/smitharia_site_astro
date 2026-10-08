@@ -22,6 +22,13 @@ function check_admin_referer($action) { if (empty($_POST['_wpnonce'])) throw new
 function wp_unslash($value) { return stripslashes($value); }
 function sanitize_text_field($value) { return strip_tags($value); }
 function admin_url($path) { return '/wp-admin/' . $path; }
+function esc_html($value) { return htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); }
+function esc_attr($value) { return esc_html($value); }
+function esc_url($value) { return esc_html($value); }
+function wp_nonce_field($action) { echo '<input type="hidden" name="_wpnonce" value="test-nonce">'; }
+function wp_readonly($value, $current = true, $display = true) { $result = $value === $current ? ' readonly="readonly"' : ''; if ($display) echo $result; return $result; }
+function checked($value) { if ($value) echo ' checked="checked"'; }
+function submit_button($label) { echo '<button type="submit">' . esc_html($label) . '</button>'; }
 function wp_die($message, $title, $args) { throw new RuntimeException($message, $args['response']); }
 function wp_safe_redirect($url) { throw new RuntimeException('saved', 302); }
 class WP_Error {
@@ -87,6 +94,12 @@ expect(Smitharia_Limited_Access::verify_viewer(viewer_request())->data['status']
 delete_transient('smitharia_share_attempts_' . hash('sha256', 'client-one'));
 
 $editor = true;
+ob_start();
+Smitharia_Limited_Access::render_admin_page();
+$admin_html = ob_get_clean();
+expect(preg_match('/id="id-new"[^>]*readonly/', $admin_html) === 0, 'new share ID remains editable in admin form');
+expect(preg_match('/id="id-client-one"[^>]*readonly="readonly"/', $admin_html) === 1, 'existing share ID is readonly in admin form');
+expect(str_contains($admin_html, '共有先を追加') && str_contains($admin_html, '変更を保存'), 'admin renders both create and edit forms');
 $_POST = array('_wpnonce' => 'nonce', 'share_id' => 'client-two', 'label' => 'Second client', 'password' => 'another-random-password', 'enabled' => '1', 'creating' => '1');
 try { Smitharia_Limited_Access::save_share(); } catch (RuntimeException $error) { expect($error->getCode() === 302, 'new share saved'); }
 expect($options['smitharia_limited_shares']['client-two']['password_hash'] !== $_POST['password'], 'plaintext password is not stored');
