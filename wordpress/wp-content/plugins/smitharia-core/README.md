@@ -11,7 +11,11 @@ Smitharia 固有の WordPress 処理を Git 管理するためのプラグイン
 - 「ツール → Smitharia Images」から既存画像を5件ずつ再生成
 - `/wp/v2/posts?is_recommend=true` の安全なおすすめ絞り込み
 - `/wp/v2/posts?limited=exclude|include|only` の限定表示絞り込み
+- 「ツール → 限定公開の共有先」で共有先ごとのID・パスワード・有効／無効を管理
+- 限定作品の未認証REST取得・公開クエリを制限し、Firebase Functionsからの認証照会に対応
 - 投稿更新時に GitHub の `repository_dispatch` を実行
+
+限定公開の初回導入と接続キーの設定は、リポジトリの [限定公開の認証](../../../../docs/limited-access.md) を参照してください。
 
 ## GitHub token
 

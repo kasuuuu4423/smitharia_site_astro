@@ -1,15 +1,15 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { getWorks, getWork, getCatsFromWork, getRawCats } from '../../../lib/WP';
+import { getAllWorks, getWork, getCatsFromWork, getRawCats } from '../../../lib/WP';
 import { decodeHtmlEscape } from '../../../lib/Util';
 
 export async function getStaticPaths() {
-    const works = await getWorks({'per_page': "100"});
+    const works = await getAllWorks('include');
     const ids = works.map((work) => {return{params: {id: work.id}}});
     return ids;
 }
 const { id } = Astro.params;
-const work = await getWork(id);
+const work = await getWork(id, true);
 const cats = await getRawCats();
 const workCats = getCatsFromWork(work, cats);
 ---

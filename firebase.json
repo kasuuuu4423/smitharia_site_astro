@@ -1,6 +1,23 @@
 {
-    "hosting": {
-        "public": "dist",
-        "ignore": []
-    }
+  "hosting": {
+    "public": "dist",
+    "predeploy": ["node scripts/check-limited-hosting.mjs"],
+    "ignore": ["limited/**"],
+    "rewrites": [
+      {
+        "source": "/limited",
+        "function": { "functionId": "limitedSite", "region": "asia-northeast1", "pinTag": true }
+      },
+      {
+        "source": "/limited/**",
+        "function": { "functionId": "limitedSite", "region": "asia-northeast1", "pinTag": true }
+      }
+    ]
+  },
+  "functions": {
+    "source": "functions",
+    "codebase": "limited",
+    "ignore": ["node_modules", "test", "*.local", ".env*"],
+    "predeploy": ["node scripts/check-limited-hosting.mjs"]
+  }
 }

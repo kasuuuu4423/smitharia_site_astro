@@ -37,8 +37,15 @@ jobs:
         run: npm run build
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+          SMITHARIA_SERVICE_KEY: ${{ secrets.SMITHARIA_SERVICE_KEY }}
+
+      - name: Install function dependencies
+        run: npm ci --prefix functions
+
+      - name: Test limited access
+        run: npm run test:limited
 
       - name: Deploy to Firebase Hosting
-        run: npx --yes firebase-tools@13.29.1 deploy --only hosting --token "$FIREBASE_TOKEN" --non-interactive
+        run: npx --yes firebase-tools@13.29.1 deploy --only functions:limited,hosting --token "$FIREBASE_TOKEN" --non-interactive
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

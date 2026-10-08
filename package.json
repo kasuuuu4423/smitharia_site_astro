@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev --host 0.0.0.0 ",
     "start": "astro dev --host 0.0.0.0 ",
-    "build": "astro check && astro build",
+    "build": "astro check && astro build && node scripts/prepare-limited-hosting.mjs",
+    "test:limited": "node --test functions/test/*.test.js && php wordpress/wp-content/plugins/smitharia-core/tests/limited-access-test.php",
     "preview": "astro preview",
     "astro": "astro",
     "lint:precommit": "eslint 'src/**/*.{ts,tsx}' --max-warnings 0",

@@ -41,7 +41,9 @@ final class Smitharia_REST_API
             );
         }
 
-        $limited = $request->get_param('limited');
+        // Public callers cannot opt into limited posts by changing a query param.
+        $limited = class_exists('Smitharia_Limited_Access') && Smitharia_Limited_Access::can_view_limited()
+            ? $request->get_param('limited') : 'exclude';
         if ($limited === 'exclude') {
             $meta_query[] = array(
                 'relation' => 'OR',

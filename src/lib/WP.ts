@@ -110,37 +110,80 @@ function reconstructCats(rawCats: CatType[]): ReconstructCatsType {
   return reconstructCats as ReconstructCatsType;
 }
 
-export async function getWork(id: number): Promise<Work> {
+export async function getWork(id: string | number | undefined, limited = false): Promise<Work> {
+  if (id === undefined || !/^\d+$/.test(String(id))) throw new Error('Invalid work ID');
   const u = new URL(WPWorkUrl + id + '/');
-  const worksRes = await fetch(u);
+  const headers =
+    limited && import.meta.env.SSR
+      ? (await import('./server/wp-build-auth')).getBuildHeaders()
+      : {};
+  const worksRes = await fetch(u, { headers });
+  if (!worksRes.ok) throw new Error(`WordPress work API error: ${worksRes.status}`);
   const work: Work = await worksRes.json();
   return work;
 }
 
 export async function getWorks(params: WPParamType = {} as WPParamType): Promise<Work[]> {
   try {
-    const u = new URL(WPWorkUrl);
-    const p: { [key: string]: string } = deleteEmptyParam(params);
+    const limited = params.limited === 'include' || params.limited === 'only';
+    const u =
+      limited && !import.meta.env.SSR
+        ? new URL('/limited/api/posts', window.location.origin)
+        : new URL(WPWorkUrl);
+    const headers =
+      limited && import.meta.env.SSR
+        ? (await import('./server/wp-build-auth')).getBuildHeaders()
+        : {};
+    const p: { [key: string]: string } = deleteEmptyParam({ limited: 'exclude', ...params });
     u.search = objectToQueryString(p);
-    const worksRes = await fetch(u);
+    const worksRes = await fetch(u, { headers, credentials: limited ? 'same-origin' : 'omit' });
 
     if (!worksRes.ok) {
-      console.error(`WordPress API error: ${worksRes.status} ${worksRes.statusText}`);
-      return [];
+      throw new Error(`WordPress API error: ${worksRes.status}`);
     }
 
     const works: Work[] = await worksRes.json();
 
     if (!Array.isArray(works)) {
-      console.error('WordPress API returned non-array response:', works);
-      return [];
+      throw new Error('WordPress API returned non-array response');
     }
 
     return works;
   } catch (error) {
+    if (import.meta.env.SSR || params.limited === 'include' || params.limited === 'only')
+      throw error;
     console.error('Error fetching works:', error);
     return [];
   }
+}
+
+export async function getAllWorks(limited: 'include' | 'exclude'): Promise<Work[]> {
+  if (!import.meta.env.SSR) throw new Error('getAllWorks is only available during the build');
+  const works: Work[] = [];
+  const headers =
+    limited === 'include' ? (await import('./server/wp-build-auth')).getBuildHeaders() : {};
+  for (let page = 1; ; page += 1) {
+    const url = new URL(WPWorkUrl);
+    url.search = new URLSearchParams({ per_page: '100', page: String(page), limited }).toString();
+    const response = await fetch(url, { headers });
+    if (!response.ok) throw new Error(`WordPress pagination error: ${response.status}`);
+    if (limited === 'include' && response.headers.get('X-Smitharia-Limited-Protection') !== '1') {
+      throw new Error('先に限定公開対応のSmitharia CoreをWordPressへ導入してください。');
+    }
+    const batch: Work[] = await response.json();
+    if (!Array.isArray(batch)) throw new Error('Invalid WordPress posts response');
+    works.push(...batch);
+    const totalPages = Number(response.headers.get('X-WP-TotalPages'));
+    if (
+      !Number.isInteger(totalPages) ||
+      totalPages < 0 ||
+      !response.headers.has('X-WP-TotalPages')
+    ) {
+      throw new Error('Missing WordPress pagination header');
+    }
+    if (page >= totalPages) break;
+  }
+  return works;
 }
 
 export async function getCatById(id: number): Promise<CatType> {
@@ -220,6 +263,8 @@ export async function getRecommendedWorks(
     };
     return await getWorks(recommendedParams);
   } catch (error) {
+    if (import.meta.env.SSR || params.limited === 'include' || params.limited === 'only')
+      throw error;
     console.error('Error fetching recommended works:', error);
     return [];
   }

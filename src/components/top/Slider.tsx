@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { type Work } from '../../lib/WP.ts';
 import ToggleFilteredImage from '../common/ToggleFilteredImage';
 
-const Slider = (props: { works: Work[] }) => {
+const Slider = (props: { works: Work[]; limited?: boolean }) => {
   return (
     <section
       className="
@@ -33,10 +33,10 @@ const Slider = (props: { works: Work[] }) => {
             className="w-full [&_h2]:hover:opacity-100 [&_h2]:hover:translate-y-0"
             key={work.id}
           >
-            <a href={'/work/' + work.id}>
+            <a href={`${props.limited ? '/limited' : ''}/work/${work.id}`}>
               <ToggleFilteredImage imgPath={work.acf.thumbnail.url} alt={work.title.rendered} />
             </a>
-            <a href={'/work/' + work.id}>
+            <a href={`${props.limited ? '/limited' : ''}/work/${work.id}`}>
               <h2
                 className="
                                 text-xl

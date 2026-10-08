@@ -18,12 +18,14 @@ const Works: React.FC<Props> = ({ filterCatId, disableSlider, limited }) => {
   const [page, setPage] = useState(2);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // 初期データの取得
   useEffect(() => {
     const fetchInitialWorks = async () => {
       try {
         setLoading(true);
+        setError(null);
         const limitedMode = limited ? 'include' : 'exclude';
         let initialWorks = await getWorks({ per_page: '20', limited: limitedMode });
 
@@ -59,6 +61,9 @@ const Works: React.FC<Props> = ({ filterCatId, disableSlider, limited }) => {
         console.error('作品取得エラー:', error);
         setWorks([]);
         setRecommendWorks([]);
+        setError(
+          '作品を取得できませんでした。IDの有効性を確認し、ページを再読み込みしてください。'
+        );
         setLoading(false);
       }
     };
@@ -104,6 +109,7 @@ const Works: React.FC<Props> = ({ filterCatId, disableSlider, limited }) => {
       setLoading(false);
     } catch (error) {
       console.error('追加作品取得エラー:', error);
+      setError('追加の作品を取得できませんでした。ページを再読み込みしてください。');
       setHasMore(false);
       setLoading(false);
     }
@@ -113,7 +119,7 @@ const Works: React.FC<Props> = ({ filterCatId, disableSlider, limited }) => {
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200) {
-      void loadMoreWorks();
+        void loadMoreWorks();
       }
     };
 
@@ -123,7 +129,7 @@ const Works: React.FC<Props> = ({ filterCatId, disableSlider, limited }) => {
 
   return (
     <section className="works">
-      {!disableSlider && <Slider works={recommendWorks} />}
+      {!disableSlider && <Slider works={recommendWorks} limited={limited} />}
       {!disableSlider && <Scrollate text="other projects" />}
       <div className="others block md:grid grid-flow-dense md:grid-cols-2 lg:grid-cols-3 md:grid-rows-[200px] md:gap-5">
         {works.map((work) => (
@@ -131,6 +137,11 @@ const Works: React.FC<Props> = ({ filterCatId, disableSlider, limited }) => {
         ))}
       </div>
       {loading && <div className="text-center text-white py-4">loading...</div>}
+      {error && (
+        <p role="alert" className="text-center text-white py-4">
+          {error}
+        </p>
+      )}
     </section>
   );
 };

@@ -15,7 +15,7 @@ if [[ ! -f "$PLUGIN_PATH/smitharia-core.php" ]]; then
 fi
 
 ssh "$REMOTE_HOST" "install -d -m 755 '$REMOTE_ROOT/wp-content/plugins/smitharia-core'"
-rsync -a "$PLUGIN_PATH/" "$REMOTE_HOST:$REMOTE_ROOT/wp-content/plugins/smitharia-core/"
+rsync -a --exclude '/tests/' "$PLUGIN_PATH/" "$REMOTE_HOST:$REMOTE_ROOT/wp-content/plugins/smitharia-core/"
 ssh "$REMOTE_HOST" "find '$REMOTE_ROOT/wp-content/plugins/smitharia-core' -name '*.php' -exec /usr/local/php82/bin/php -l {} \;"
 
 echo "Smitharia Core uploaded and syntax-checked."
