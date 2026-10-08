@@ -5,11 +5,7 @@
     "ignore": ["limited/**"],
     "rewrites": [
       {
-        "source": "/limited",
-        "function": { "functionId": "limitedSite", "region": "asia-northeast1", "pinTag": true }
-      },
-      {
-        "source": "/limited/**",
+        "source": "/limited{,/**}",
         "function": { "functionId": "limitedSite", "region": "asia-northeast1", "pinTag": true }
       }
     ]
