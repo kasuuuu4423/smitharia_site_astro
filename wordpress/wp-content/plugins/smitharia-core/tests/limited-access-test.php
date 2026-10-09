@@ -136,3 +136,29 @@ $editor = false;
 expect(Smitharia_Limited_Access::verify_viewer(viewer_request('another-random-password', 'client-two'))->data['status'] === 401, 'old password rejected after rotation');
 expect(Smitharia_Limited_Access::verify_viewer(viewer_request('rotated-random-password', 'client-two')) === true, 'new password accepted');
 try { Smitharia_Limited_Access::save_share(); } catch (RuntimeException $error) { expect($error->getCode() === 403, 'non-admin cannot manage shares'); }
+
+$_SERVER['REQUEST_METHOD'] = 'POST';
+$_POST = array('_wpnonce' => 'nonce', 'share_id' => 'client-two', 'confirm_delete' => '1');
+try { Smitharia_Limited_Access::delete_share(); } catch (RuntimeException $error) { expect($error->getCode() === 403, 'non-admin cannot delete shares'); }
+$editor = true;
+$_SERVER['REQUEST_METHOD'] = 'GET';
+try { Smitharia_Limited_Access::delete_share(); } catch (RuntimeException $error) { expect($error->getCode() === 405, 'GET cannot delete shares'); }
+$_SERVER['REQUEST_METHOD'] = 'POST';
+unset($_POST['_wpnonce']);
+try { Smitharia_Limited_Access::delete_share(); } catch (RuntimeException $error) { expect($error->getMessage() === 'Missing nonce', 'delete requires nonce'); }
+$_POST['_wpnonce'] = 'nonce';
+unset($_POST['confirm_delete']);
+try { Smitharia_Limited_Access::delete_share(); } catch (RuntimeException $error) { expect($error->getCode() === 400 && isset($options['smitharia_limited_shares']['client-two']), 'unconfirmed delete preserves share'); }
+$_POST['confirm_delete'] = '1';
+try { Smitharia_Limited_Access::delete_share(); } catch (RuntimeException $error) { expect($error->getCode() === 302, 'confirmed deletion redirects'); }
+expect(!isset($options['smitharia_limited_shares']['client-two']), 'deleted share removed from storage');
+expect(isset($options['smitharia_limited_shares']['client-one']), 'other share preserved');
+$editor = false;
+expect(Smitharia_Limited_Access::verify_viewer(viewer_request('rotated-random-password', 'client-two'))->data['status'] === 401, 'deleted credentials cannot authenticate');
+$editor = true;
+ob_start();
+Smitharia_Limited_Access::render_admin_page();
+$deleted_html = ob_get_clean();
+expect(!str_contains($deleted_html, 'id-client-two'), 'deleted share no longer appears in admin');
+expect(str_contains($deleted_html, 'smitharia_delete_share') && str_contains($deleted_html, 'name="confirm_delete" value="1" required'), 'remaining share has a deletion form requiring confirmation');
+try { Smitharia_Limited_Access::delete_share(); } catch (RuntimeException $error) { expect($error->getCode() === 400, 'deleting missing share rejected'); }

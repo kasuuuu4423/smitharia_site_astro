@@ -11,6 +11,7 @@ final class Smitharia_Limited_Access
     {
         add_action('admin_menu', array(__CLASS__, 'register_admin_page'));
         add_action('admin_post_smitharia_save_share', array(__CLASS__, 'save_share'));
+        add_action('admin_post_smitharia_delete_share', array(__CLASS__, 'delete_share'));
         add_action('rest_api_init', array(__CLASS__, 'register_routes'));
         // ACF to REST API registers routes on this filter and returns null.
         // Run afterwards so it cannot erase the access-denied response.
@@ -189,6 +190,33 @@ final class Smitharia_Limited_Access
         exit;
     }
 
+    public static function delete_share(): void
+    {
+        if (!current_user_can('manage_options')) {
+            wp_die('操作する権限がありません。', '', array('response' => 403));
+        }
+        if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+            wp_die('削除フォームから操作してください。', '', array('response' => 405));
+        }
+        $share_id = isset($_POST['share_id']) && is_string($_POST['share_id']) ? wp_unslash($_POST['share_id']) : '';
+        if (!preg_match('/^[A-Za-z0-9_-]{3,64}$/D', $share_id)) {
+            wp_die('共有先のIDを確認してください。', '', array('response' => 400));
+        }
+        check_admin_referer('smitharia_delete_share_' . $share_id);
+        if (($_POST['confirm_delete'] ?? '') !== '1') {
+            wp_die('削除の確認にチェックを入れてください。', '', array('response' => 400));
+        }
+        $shares = get_option(self::OPTION, array());
+        if (!isset($shares[$share_id])) {
+            wp_die('削除対象の共有先が存在しません。', '', array('response' => 400));
+        }
+        unset($shares[$share_id]);
+        update_option(self::OPTION, $shares, false);
+        delete_transient('smitharia_share_attempts_' . hash('sha256', $share_id));
+        wp_safe_redirect(admin_url('tools.php?page=smitharia-limited-shares&deleted=1'));
+        exit;
+    }
+
     public static function render_admin_page(): void
     {
         if (!current_user_can('manage_options')) {
@@ -205,6 +233,9 @@ final class Smitharia_Limited_Access
             <?php endif; ?>
             <?php if (isset($_GET['saved']) && $_GET['saved'] === '1') : ?>
                 <div class="notice notice-success"><p>共有先を保存しました。</p></div>
+            <?php endif; ?>
+            <?php if (isset($_GET['deleted']) && $_GET['deleted'] === '1') : ?>
+                <div class="notice notice-success" role="status"><p>共有先を削除しました。このIDでは限定ページにアクセスできません。</p></div>
             <?php endif; ?>
             <h2>共有先を追加</h2>
             <?php self::render_share_form('', array('label' => '', 'enabled' => true)); ?>
@@ -236,6 +267,16 @@ final class Smitharia_Limited_Access
             </table>
             <?php submit_button($creating ? '共有先を追加' : '変更を保存'); ?>
         </form>
+        <?php if (!$creating) : ?>
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" aria-label="<?php echo esc_attr($share['label'] . '（' . $share_id . '）の削除'); ?>">
+                <input type="hidden" name="action" value="smitharia_delete_share">
+                <input type="hidden" name="share_id" value="<?php echo esc_attr($share_id); ?>">
+                <?php wp_nonce_field('smitharia_delete_share_' . $share_id); ?>
+                <p><label><input type="checkbox" name="confirm_delete" value="1" required aria-describedby="delete-description-<?php echo esc_attr($share_id); ?>"> 「<?php echo esc_html($share['label']); ?>」（<?php echo esc_html($share_id); ?>）を削除する。元に戻せません。</label></p>
+                <p id="delete-description-<?php echo esc_attr($share_id); ?>">削除すると一覧から消え、このIDは次のアクセスから使えなくなります。</p>
+                <?php submit_button('共有先を削除', 'delete'); ?>
+            </form>
+        <?php endif; ?>
         <?php
     }
 }
