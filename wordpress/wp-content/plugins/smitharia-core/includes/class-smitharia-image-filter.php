@@ -13,7 +13,7 @@ final class Smitharia_Image_Filter
     private const CRON_HOOK = 'smitharia_generate_filtered_image';
     private const MAX_ATTEMPTS = 3;
     private const LOCK_TIMEOUT = 900;
-    private const BATCH_SIZE = 5;
+    private const BATCH_SIZE = 1;
 
     public static function init(): void
     {
@@ -311,7 +311,7 @@ final class Smitharia_Image_Filter
                 完了 <?php echo esc_html((string) $counts['complete']); ?>件 ／
                 失敗 <?php echo esc_html((string) $counts['failed']); ?>件
             </p>
-            <p>問題がある場合のみ、JPEG・PNGの元画像からfiltered画像を5件ずつ再生成します。</p>
+            <p>未生成のJPEG・PNG画像を1件ずつ処理します。生成済みのファイルは再処理しません。</p>
             <button type="button" class="button button-primary" id="smitharia-regenerate">再生成を開始</button>
             <p id="smitharia-regenerate-status" aria-live="polite"></p>
         </div>
@@ -372,6 +372,12 @@ final class Smitharia_Image_Filter
 
         $errors = array();
         foreach ($query->posts as $attachment_id) {
+            $relative_path = get_post_meta((int) $attachment_id, self::META_KEY, true);
+            $uploads = wp_upload_dir();
+            if ($relative_path && empty($uploads['error'])
+                && is_readable(trailingslashit($uploads['basedir']) . ltrim($relative_path, '/'))) {
+                continue;
+            }
             $result = self::generate_for_attachment((int) $attachment_id);
             if (is_wp_error($result)) {
                 $errors[] = sprintf('#%d: %s', $attachment_id, $result->get_error_message());
