@@ -11,7 +11,7 @@ import { decodeHtmlEscape } from '../../lib/Util';
 import type { Work } from '../../lib/WP';
 import type { Swiper as SwiperInstance } from 'swiper';
 
-const HeroSlider = ({ works }: { works: Work[] }) => {
+const HeroSlider = ({ works, limited = false }: { works: Work[]; limited?: boolean }) => {
   const [swiper, setSwiper] = useState<SwiperInstance | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(true);
@@ -74,7 +74,7 @@ const HeroSlider = ({ works }: { works: Work[] }) => {
       {activeWork && (
         <a
           className="heroSlideCredit"
-          href={`/work/${activeWork.id}/`}
+          href={`${limited ? '/limited' : ''}/work/${activeWork.id}/`}
           title={decodeHtmlEscape(activeWork.title.rendered)}
         >
           <span>{decodeHtmlEscape(activeWork.title.rendered)}</span>

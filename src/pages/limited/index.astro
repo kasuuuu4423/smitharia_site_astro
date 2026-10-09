@@ -1,18 +1,5 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import Works from '../../components/works/Works';
+import HomePage from '../../components/top/HomePage.astro';
 ---
 
-<Layout limited={true} title="" pagename="works">
-	<main class="w-full">
-		<Works client:load limited={true}/>
-	</main>
-</Layout>
-
-<style>
-	main {
-	}
-</style>
-
-<script>
-</script>
+<HomePage limited />

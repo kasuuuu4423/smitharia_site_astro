@@ -83,7 +83,7 @@ const ToggleFilteredImage: React.FC<Props> = ({ imgPath, alt, reverse }) => {
       />
       <img
         ref={loadRef}
-        className="load absolute duration-200 top-0 left-0 w-full h-full object-cover"
+        className="load pointer-events-none absolute duration-200 top-0 left-0 w-full h-full object-cover"
         src={LoadImage.src}
         alt=""
         style={imageStyle}

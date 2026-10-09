@@ -1,0 +1,8 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import WorksList from '../../components/works/Works';
+---
+
+<Layout title="works" pagename="works" limited>
+  <main class="w-full"><WorksList client:load limited /></main>
+</Layout>
