@@ -66,6 +66,10 @@ WordPressのプラグイン反映後、フロントエンドを再ビルド・�
 今後の作品や限定公開の作品でも、相談案内が空欄なら共通の日英案内を表示します。
 ローカル専用の作品サンプルは使用せず、開発・本番ともにWPの保存値を表示します。
 
+SSHやZIPアップロードを使用できない場合は、`python3 scripts/bundle-wordpress-plugin.py /tmp/smitharia-core.php` で
+クラスと初期文章をまとめた単一PHPファイルを生成できます。PHP構文検査後、WPのプラグインファイルエディターで
+Smitharia Coreの `smitharia-core.php` に反映します。分割ファイル版と同じソースから生成します。
+
 境界テスト: `php wordpress/wp-content/plugins/smitharia-core/tests/acf-rest-api-test.php`
 本番切り替え時は公開 API の画像・本文・プロフィールを切り替え前後で比較し、
 未認証の更新拒否と旧 `/acf/v3/` ルートの消失を確認してください。
