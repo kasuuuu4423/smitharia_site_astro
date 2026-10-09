@@ -8,8 +8,7 @@
 .heroSlideshow {
   z-index: 0;
 }
-.heroSlideImage,
-.heroSlideImage img {
+.heroSlideImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -77,8 +76,7 @@
   background: white;
 }
 @media (max-width: 767px) {
-  .heroSlideImage,
-  .heroSlideImage img {
+  .heroSlideImage {
     object-position: 52% center;
   }
   .heroSlideCredit {
@@ -95,7 +93,18 @@
   }
 }
 
-.heroSlider:hover .swiper-slide-active img.normal,
-.heroSlider:focus-within .swiper-slide-active img.normal {
-  opacity: 0;
+.heroSliderNoise {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.03;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .heroSliderNoise {
+    display: none;
+  }
 }

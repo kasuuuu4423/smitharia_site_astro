@@ -5,8 +5,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import './HeroSlider.css';
+import NoiseImage from '../../assets/images/load.gif';
 import { decodeHtmlEscape } from '../../lib/Util';
-import ToggleFilteredImage, { parentClass } from '../common/ToggleFilteredImage';
 
 import type { Work } from '../../lib/WP';
 import type { Swiper as SwiperInstance } from 'swiper';
@@ -55,17 +55,22 @@ const HeroSlider = ({ works }: { works: Work[] }) => {
         onSwiper={setSwiper}
         onSlideChange={(instance) => setActiveIndex(instance.realIndex)}
       >
-        {works.map((work) => (
-          <SwiperSlide key={work.id} className={parentClass}>
-            <div className="heroSlideImage">
-              <ToggleFilteredImage
-                imgPath={work.acf.thumbnail.url}
-                alt={decodeHtmlEscape(work.title.rendered)}
-              />
-            </div>
+        {works.map((work, index) => (
+          <SwiperSlide key={work.id}>
+            <img
+              className="heroSlideImage"
+              src={work.acf.thumbnail.url}
+              alt={decodeHtmlEscape(work.title.rendered)}
+              width="1200"
+              height="800"
+              fetchPriority={index === 0 ? 'high' : 'auto'}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+            />
           </SwiperSlide>
         ))}
       </Swiper>
+      <img className="heroSliderNoise" src={NoiseImage.src} alt="" aria-hidden="true" />
       {activeWork && (
         <a
           className="heroSlideCredit"
@@ -87,8 +92,8 @@ const HeroSlider = ({ works }: { works: Work[] }) => {
           >
             <span aria-hidden="true">←</span>
           </button>
-        <div className="heroSliderDots">
-          {works.map((work, index) => (
+          <div className="heroSliderDots">
+            {works.map((work, index) => (
               <button
                 key={work.id}
                 type="button"
