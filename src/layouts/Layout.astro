@@ -148,6 +148,15 @@ const { title, pagename, limited, home = false } = Astro.props;
 </html>
 <style is:global>
   :root {
+    /* ブランド色は見出し・操作に使い、併記する翻訳は控えめな共通色にする。 */
+    --brandRed: #ff2e2e;
+    --brandGreen: #36e83c;
+    --brandBlue: #2f4fff;
+    --brandRedText: #ff9292;
+    --brandBlueText: #a8b8ff;
+    --translationText: #b4b4b4;
+  }
+  :root {
     --accent: 136, 58, 234;
     --accent-light: 224, 204, 250;
     --accent-dark: 49, 10, 101;
@@ -164,6 +173,14 @@ const { title, pagename, limited, home = false } = Astro.props;
     letter-spacing: 0.1rem;
     background: #13151a;
     background-size: 224px;
+  }
+  .translation {
+    color: var(--translationText);
+    font-family: 'Libre Caslon Text', Georgia, serif;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: normal;
+    line-height: 1.75;
   }
   :where(a, button):focus-visible {
     outline: 2px solid white;

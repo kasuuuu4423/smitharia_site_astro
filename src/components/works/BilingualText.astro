@@ -1,0 +1,31 @@
+---
+interface Props {
+  japanese?: string | false;
+  english?: string | false;
+}
+
+const { japanese, english } = Astro.props;
+const japaneseText = typeof japanese === 'string' ? japanese.trim() : '';
+const englishText = typeof english === 'string' ? english.trim() : '';
+---
+
+{
+  japaneseText && (
+    <p lang="ja" class="whitespace-pre-wrap break-words text-pretty">
+      {japaneseText}
+    </p>
+  )
+}
+{
+  englishText && (
+    <p lang="en" class="translation whitespace-pre-wrap break-words text-pretty">
+      {englishText}
+    </p>
+  )
+}
+
+<style>
+  p + p {
+    margin-top: 16px;
+  }
+</style>

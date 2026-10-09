@@ -54,20 +54,30 @@ const selectedWorks = selection.flatMap((item) => {
       >
     </section>
     <section id="introduction" class="homeIntro homeSection" aria-labelledby="introTitle">
-      <p class="sectionLabel">about smitharia</p>
+      <p class="sectionLabel">
+        スミサリアについて<span class="translation" lang="en">about smitharia</span>
+      </p>
       <div>
         <h2 id="introTitle">演出を仕組みからつくる。</h2>
+        <p class="englishText translation" lang="en">Creating the systems behind the experience.</p>
         <p class="introText">
           音に反応する光やゲームで操作する映像。<br />
           表現に合わせた仕組みをつくり<br />
           ライブや展示の企画・演出を手がけています。
+        </p>
+        <p class="englishText translation" lang="en">
+          Light that responds to sound. Visuals controlled through games.<br />
+          We build systems to suit each creative idea,<br />
+          and plan and direct live events and exhibitions.
         </p>
         <a class="textLink" href="/aboutus/">about us <span aria-hidden="true">↗</span></a>
       </div>
     </section>
     <section class="homeWorks homeSection" aria-labelledby="selectedTitle">
       <div class="sectionHeader">
-        <h2 id="selectedTitle">selected works</h2>
+        <h2 id="selectedTitle">
+          主な制作実績<span class="translation" lang="en">selected works</span>
+        </h2>
         <a class="textLink" href="/works/">all works <span aria-hidden="true">↗</span></a>
       </div>
       <div class="selectedGrid">
@@ -93,7 +103,13 @@ const selectedWorks = selection.flatMap((item) => {
       </div>
     </section>
     <section id="contact" class="homeContact homeSection" aria-labelledby="homeContactTitle">
-      <div><h2 id="homeContactTitle">contact</h2><p>企画や制作のご相談はこちらへ。</p></div>
+      <div>
+        <h2 id="homeContactTitle">
+          制作のご相談<span class="translation" lang="en">contact</span>
+        </h2>
+        <p>企画や制作のご相談はこちらへ。</p>
+        <p class="englishText translation" lang="en">Get in touch to discuss your project.</p>
+      </div>
       <a class="contactMail" href="mailto:info@smitharia.com"
         >info@smitharia.com <span aria-hidden="true">↗</span></a
       >
@@ -117,6 +133,38 @@ const selectedWorks = selection.flatMap((item) => {
     --homeMuted: #b9b8b4;
     --homeBorder: #555550;
     color: var(--homeText);
+    font-weight: 400;
+  }
+  .englishText,
+  .homeContact .englishText {
+    margin-top: 16px;
+    max-width: 38em;
+  }
+  .sectionLabel,
+  .sectionHeader h2,
+  .homeContact h2 {
+    color: var(--brandRedText);
+  }
+  .textLink span,
+  .workCaption > span,
+  .contactMail span {
+    color: var(--brandGreen);
+  }
+  .homeHeader nav a:hover,
+  .homeHeader nav a:focus-visible,
+  .homeFooter a:hover,
+  .homeFooter a:focus-visible,
+  .textLink:hover,
+  .textLink:focus-visible,
+  .contactMail:hover,
+  .contactMail:focus-visible {
+    color: var(--brandGreen);
+  }
+  .sectionLabel .translation,
+  .sectionHeader h2 .translation,
+  .homeContact h2 .translation {
+    display: block;
+    margin-top: 8px;
   }
   .skipLink {
     position: absolute;
@@ -259,7 +307,7 @@ const selectedWorks = selection.flatMap((item) => {
     margin-top: 32px;
     font-size: 16px;
     line-height: 2.2;
-    color: var(--homeMuted);
+    color: var(--homeText);
   }
   .textLink {
     display: inline-flex;
@@ -361,10 +409,10 @@ const selectedWorks = selection.flatMap((item) => {
   .homeContact h2 {
     font-size: 32px;
   }
-  .homeContact p {
+  .homeContact p:not(.translation) {
     margin-top: 16px;
-    font-size: 14px;
-    color: var(--homeMuted);
+    font-size: 16px;
+    color: var(--homeText);
   }
   .contactMail {
     display: flex;

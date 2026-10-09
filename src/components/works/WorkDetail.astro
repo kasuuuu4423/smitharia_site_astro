@@ -1,0 +1,229 @@
+---
+import BilingualText from './BilingualText.astro';
+import type { Work, CatType } from '../../lib/WP';
+import { decodeHtmlEscape } from '../../lib/Util';
+
+interface Props {
+  work: Work;
+  categories: CatType[];
+}
+
+const { work, categories } = Astro.props;
+const { acf } = work;
+const title = decodeHtmlEscape(work.title.rendered);
+const hasText = (value: string | false | undefined) =>
+  typeof value === 'string' && value.trim().length > 0;
+const hasScope = hasText(acf.project_scope) || hasText(acf.project_scope_en);
+const hasSummary = hasText(acf.project_summary) || hasText(acf.project_summary_en);
+const hasDescription = hasText(acf.description) || hasText(acf.description_en);
+const hasApproach = hasText(acf.project_approach) || hasText(acf.project_approach_en);
+const hasCredit = hasText(acf.credit) || hasText(acf.credit_en);
+const consultationJa = hasText(acf.project_consultation)
+  ? acf.project_consultation
+  : '企画の内容や、依頼したい制作範囲をお聞かせください。';
+const consultationEn = hasText(acf.project_consultation_en)
+  ? acf.project_consultation_en
+  : 'Tell us about your project and the production work you would like to commission.';
+const emailSubject = encodeURIComponent('制作のご相談 / Project inquiry');
+const emailBody = encodeURIComponent(
+  `参考作品 / Reference work: ${title}\n\nご相談内容 / Project details:\n`
+);
+---
+
+<main class="workDetail w-full text-white">
+  <img class="w-full h-auto" src={acf.thumbnail.url} alt={acf.thumbnail.alt || title} />
+  <header class="workHeader workInset">
+    <h1 class="text-balance text-2xl lg:text-5xl font-serif">{title}</h1>
+    {
+      hasText(acf.project_title_en) && (
+        <p lang="en" class="englishTitle translation text-balance">
+          {acf.project_title_en}
+        </p>
+      )
+    }
+    <ul class="workCategories flex flex-wrap gap-x-4 gap-y-2 text-sm">
+      {categories.filter(Boolean).map((category) => <li>{category.name}</li>)}
+    </ul>
+    {
+      hasSummary && (
+        <div class="workSummary">
+          <BilingualText japanese={acf.project_summary} english={acf.project_summary_en} />
+        </div>
+      )
+    }
+    {
+      hasScope && (
+        <section class="workScope" aria-labelledby="scopeHeading">
+          <h2 id="scopeHeading" class="sectionHeading text-balance">
+            担当範囲{' '}
+            <span lang="en" class="translation">
+              Our role
+            </span>
+          </h2>
+          <BilingualText japanese={acf.project_scope} english={acf.project_scope_en} />
+        </section>
+      )
+    }
+  </header>
+  {
+    work.content.rendered.trim() && (
+      <div class="workContent">
+        <div set:html={work.content.rendered} />
+      </div>
+    )
+  }
+  {
+    hasDescription && (
+      <div class="workSection workInset">
+        <div class="workDescription text-pretty" set:html={acf.description} />
+        <BilingualText english={acf.description_en} />
+      </div>
+    )
+  }
+  {
+    hasApproach && (
+      <div class="workSection workInset">
+        <BilingualText japanese={acf.project_approach} english={acf.project_approach_en} />
+      </div>
+    )
+  }
+  {
+    hasCredit && (
+      <section class="workSection workInset" aria-labelledby="creditHeading">
+        <h2 id="creditHeading" class="sectionHeading text-balance">
+          クレジット{' '}
+          <span lang="en" class="translation">
+            Credits
+          </span>
+        </h2>
+        <div class="whitespace-pre-wrap break-words text-pretty">{acf.credit}</div>
+        <BilingualText english={acf.credit_en} />
+      </section>
+    )
+  }
+  <section class="workConsultation workInset" aria-labelledby="consultationHeading">
+    <h2 id="consultationHeading" class="sectionHeading text-balance">
+      制作のご相談 <span lang="en" class="translation">Discuss a project</span>
+    </h2>
+    <BilingualText japanese={consultationJa} english={consultationEn} />
+    <a
+      class="consultationLink"
+      href={`mailto:info@smitharia.com?subject=${emailSubject}&body=${emailBody}`}
+    >
+      <span lang="ja">制作の相談をする</span>
+      <span lang="en" class="translation">Discuss your project</span>
+      <span>info@smitharia.com <span aria-hidden="true">↗</span></span>
+    </a>
+  </section>
+</main>
+
+<style>
+  :global(.contacts) {
+    position: static;
+  }
+  .workDetail {
+    font-family: '游ゴシック体', 'YuGothic', '游ゴシック', 'Yu Gothic', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.75;
+  }
+  .workInset {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .workHeader {
+    margin-top: 32px;
+    margin-bottom: 64px;
+  }
+  h1 {
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+  .englishTitle {
+    margin-top: 16px;
+    overflow-wrap: anywhere;
+  }
+  .workCategories {
+    margin-top: 24px;
+    color: #b4b4b4;
+  }
+  .workSummary:not(:empty) {
+    margin-top: 32px;
+    max-width: 48rem;
+  }
+  .workScope {
+    margin-top: 32px;
+    border-top: 1px solid #ffffff30;
+    padding-top: 24px;
+    max-width: 48rem;
+  }
+  .sectionHeading {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+  .sectionHeading span {
+    display: block;
+    margin-top: 8px;
+  }
+  .workSection {
+    margin-bottom: 64px;
+    max-width: 48rem;
+  }
+  .workDescription:not(:empty) + :global(p),
+  .workSection > .whitespace-pre-wrap + :global(p) {
+    margin-top: 16px;
+  }
+  .workDescription :global(p + p) {
+    margin-top: 16px;
+  }
+  .workContent {
+    margin-bottom: 64px;
+    overflow-wrap: anywhere;
+  }
+  .workContent :global(figure) {
+    margin-bottom: 64px;
+  }
+  .workContent :global(.wp-block-embed__wrapper) {
+    position: relative;
+    aspect-ratio: 16 / 9;
+  }
+  .workContent :global(.wp-block-embed__wrapper iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .workContent :global(a),
+  .workDescription :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    color: var(--brandBlueText);
+  }
+  .workConsultation {
+    border-top: 1px solid #ffffff30;
+    padding-top: 32px;
+    padding-bottom: 64px;
+  }
+  .consultationLink {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 24px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .consultationLink:hover {
+    color: var(--brandBlueText);
+  }
+  @media (min-width: 768px) {
+    .workInset {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+</style>

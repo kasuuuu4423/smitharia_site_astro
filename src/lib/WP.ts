@@ -37,6 +37,17 @@ export interface Work {
     extend_row: boolean;
     is_recommend: boolean;
     limited: boolean;
+    project_summary?: string | false;
+    project_summary_en?: string | false;
+    project_scope?: string | false;
+    project_scope_en?: string | false;
+    project_approach?: string | false;
+    project_approach_en?: string | false;
+    project_consultation?: string | false;
+    project_consultation_en?: string | false;
+    project_title_en?: string | false;
+    description_en?: string | false;
+    credit_en?: string | false;
   };
   id: number;
   categories: number[];

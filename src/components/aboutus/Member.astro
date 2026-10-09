@@ -22,19 +22,19 @@ const { memberInfo } = Astro.props;
       </div>
       <h2 class="text-xl font-bold mb-3">
         {memberInfo.acf.name}
-        <div lang="en" class="english-name font-serif mt-2 text-base text-[#ff9292] font-normal">
+        <div lang="en" class="english-name translation mt-2">
           {memberInfo.acf.english_name}
         </div>
       </h2>
       <div class="position font-medium text-base mb-4">
         {memberInfo.acf.position}
-        <div lang="en" class="english-position font-serif mt-2 text-base text-green font-normal">
+        <div lang="en" class="english-position translation mt-2">
           {memberInfo.acf.english_position}
         </div>
       </div>
       <div class="bio font-normal text-base mb-4 leading-relaxed whitespace-pre-wrap">
         {memberInfo.acf.bio}
-        <div lang="en" class="english-bio mt-6 font-serif text-base text-[#a8b8ff] font-normal">
+        <div lang="en" class="english-bio translation mt-4">
           {memberInfo.acf.english_bio}
         </div>
       </div>
