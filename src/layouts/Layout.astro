@@ -10,9 +10,23 @@ interface Props {
   pagename: string;
   limited?: boolean;
   home?: boolean;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
 }
 
-const { title, pagename, limited, home = false } = Astro.props;
+const {
+  title,
+  pagename,
+  limited,
+  home = false,
+  description = 'Creative Platform',
+  image = '/ith_motion.gif',
+  imageAlt = 'smitharia',
+} = Astro.props;
+const pageTitle = title === '' ? 'smitharia' : `${title} | smitharia`;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const imageUrl = new URL(image, Astro.site);
 ---
 
 <!doctype html>
@@ -38,17 +52,23 @@ const { title, pagename, limited, home = false } = Astro.props;
 
     <!-- 一般的なタグ -->
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
-    <meta name="description" content="Creative Platform" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl.href} />
     <meta name="keywords" content="{{ video, installation, software, web, graphic }}" />
     <!-- 設定 -->
     <meta name="format-detection" content="telephone=no,email=no,address=no" />
     <!-- SNS向け -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="smitharia" />
-    <meta property="og:description" content="Creative Platform" />
-    <meta property="og:url" content="https://smitharia.com" />
-    <meta property="og:image" content="/ith_motion.gif" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl.href} />
+    <meta property="og:image" content={imageUrl.href} />
+    <meta property="og:image:alt" content={imageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl.href} />
+    <meta name="twitter:image:alt" content={imageAlt} />
     <meta name="twitter:site" content="@__smitharia" />
     <meta name="twitter:creator" content="@__smitharia" />
     <!-- アイコン関係 -->
@@ -57,7 +77,7 @@ const { title, pagename, limited, home = false } = Astro.props;
     <!-- Android -->
     <meta name="theme-color" content="#000000" />
 
-    <title>{title == '' ? 'smitharia' : title + ' | smitharia'}</title>
+    <title>{pageTitle}</title>
     <link rel="stylesheet" href="https://use.typekit.net/kwl5mrn.css" />
     <script src="https://kit.fontawesome.com/24612b40c8.js" crossorigin="anonymous" is:inline
     ></script>

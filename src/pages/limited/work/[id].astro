@@ -1,6 +1,7 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import WorkDetail from '../../../components/works/WorkDetail.astro';
+import { getWorkMetadata } from '../../../lib/WorkMetadata';
 import { getAllWorks, getWork, getCatsFromWork, getRawCats } from '../../../lib/WP';
 
 export async function getStaticPaths() {
@@ -16,6 +17,6 @@ const cats = await getRawCats();
 const workCats = getCatsFromWork(work, cats);
 ---
 
-<Layout limited={true} title={work.title.rendered} pagename="works">
+<Layout limited={true} {...getWorkMetadata(work)} pagename="works">
   <WorkDetail work={work} categories={workCats} />
 </Layout>
