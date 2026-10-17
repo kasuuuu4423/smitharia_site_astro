@@ -1,0 +1,40 @@
+.recommendedWorks .slideImage {
+  height: 50vh;
+  min-height: 240px;
+}
+.recommendedWorks .swiper-pagination {
+  position: static;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-bottom: 8px;
+}
+.recommendedWorks .swiper-pagination-bullet {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: 0 !important;
+  border-radius: 0;
+  background: transparent;
+  opacity: 1;
+}
+.recommendedWorks .swiper-pagination-bullet::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border: 1px solid white;
+  border-radius: 50%;
+  background: transparent;
+}
+.recommendedWorks .swiper-pagination-bullet-active::before {
+  background: white;
+}
+.recommendedWorks .swiper a:focus-visible {
+  outline-offset: -4px;
+}
+@media (min-width: 768px) {
+  .recommendedWorks .slideImage {
+    height: 70vh;
+  }
+}
