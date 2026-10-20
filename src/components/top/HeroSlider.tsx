@@ -7,6 +7,7 @@ import 'swiper/css/effect-fade';
 import './HeroSlider.css';
 import NoiseImage from '../../assets/images/load.gif';
 import { decodeHtmlEscape } from '../../lib/Util';
+import ArrowIcon from '../common/ArrowIcon';
 
 import type { Work } from '../../lib/WP';
 import type { Swiper as SwiperInstance } from 'swiper';
@@ -78,7 +79,9 @@ const HeroSlider = ({ works, limited = false }: { works: Work[]; limited?: boole
           title={decodeHtmlEscape(activeWork.title.rendered)}
         >
           <span>{decodeHtmlEscape(activeWork.title.rendered)}</span>
-          <span aria-hidden="true">↗</span>
+          <span aria-hidden="true">
+            <ArrowIcon />
+          </span>
         </a>
       )}
       {hasMultipleSlides && (
@@ -90,7 +93,9 @@ const HeroSlider = ({ works, limited = false }: { works: Work[]; limited?: boole
               swiper?.slidePrev();
             }}
           >
-            <span aria-hidden="true">←</span>
+            <span aria-hidden="true">
+              <ArrowIcon direction="left" />
+            </span>
           </button>
           <div className="heroSliderDots">
             {works.map((work, index) => (
@@ -112,7 +117,9 @@ const HeroSlider = ({ works, limited = false }: { works: Work[]; limited?: boole
               swiper?.slideNext();
             }}
           >
-            <span aria-hidden="true">→</span>
+            <span aria-hidden="true">
+              <ArrowIcon direction="right" />
+            </span>
           </button>
         </div>
       )}

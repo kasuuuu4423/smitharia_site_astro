@@ -1,4 +1,5 @@
 ---
+import ArrowIcon from '../common/ArrowIcon';
 import Layout from '../../layouts/Layout.astro';
 import Members from '../../components/aboutus/Members.astro';
 import ToggleFilteredImage from '../../components/common/ToggleFilteredImage.astro';
@@ -114,7 +115,7 @@ const activities = [
                   </div>
                   <div class="workCaption">
                     <span>{decodeHtmlEscape(work.title.rendered)}</span>
-                    <span aria-hidden="true">↗</span>
+                    <span aria-hidden="true"><ArrowIcon /></span>
                   </div>
                   <p class="workCredit">{credit}</p>
                   <p class="workCredit englishCredit translation" lang="en">
@@ -127,7 +128,7 @@ const activities = [
         )
       }
       <a class="textLink" href={`${urlPrefix}/works/`}
-        >all works <span aria-hidden="true">↗</span></a
+        >all works <span aria-hidden="true"><ArrowIcon /></span></a
       >
     </section>
     <section class="platform aboutInset mb-24" aria-labelledby="platformTitle">
